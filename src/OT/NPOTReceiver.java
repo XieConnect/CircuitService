@@ -1,4 +1,5 @@
 // Copyright (C) 2010 by Yan Huang <yhuang@virginia.edu>
+// Copyright (C) 2011 by Nathaniel Husted <nhusted@indiana.edu>
 
 package OT;
 
@@ -6,6 +7,22 @@ import java.math.*;
 import java.util.*;
 import java.io.*;
 import Cipher.Cipher;
+
+/**
+ * 
+ * This class implements the Sender portion of the Naor-Pinkas OT protocol.
+ * 
+ * <p>
+ * 
+ * The description of this protocol can be found in their 2001 paper "Efficient
+ * oblivious transfer protocols" published in the Proceedings of the twelfth
+ * annual ACM-SIAM symposium on Discrete algorithms.
+ *
+ * @author yhuang
+ * @author nhusted 
+ * @see Receiver
+ * @see OTExtSender
+ */
 
 public class NPOTReceiver extends Receiver {
     private static Random rnd = new Random();
@@ -34,22 +51,51 @@ public class NPOTReceiver extends Receiver {
     }
 
     private void initialize() throws Exception {
-	C  = (BigInteger) ois.readObject();
-	p  = (BigInteger) ois.readObject();
-	q  = (BigInteger) ois.readObject();
-	g  = (BigInteger) ois.readObject();
-	gr = (BigInteger) ois.readObject();
-	msgBitLength = ois.readInt();
-
-	gk = new BigInteger[numOfChoices];
-	C_over_gk = new BigInteger[numOfChoices];
-	keys = new BigInteger[numOfChoices];
-	for (int i = 0; i < numOfChoices; i++) {
-	    BigInteger k = (new BigInteger(q.bitLength(), rnd)).mod(q);
-	    gk[i] = g.modPow(k, p);
-	    C_over_gk[i] = C.multiply(gk[i].modInverse(p)).mod(p);
-	    keys[i] = gr.modPow(k, p);
-	}
+    	
+    	// Constant 
+		C  = (BigInteger) ois.readObject();
+		
+		// p is pLength-bit prime #
+		p  = (BigInteger) ois.readObject();
+		
+		// q is qLength-bit prime #
+		q  = (BigInteger) ois.readObject();
+		
+		// g is a generator in group Z^*_p
+		g  = (BigInteger) ois.readObject();
+		
+		// g^r element of z^*_p;
+		gr = (BigInteger) ois.readObject();
+		
+		// Size of msg
+		msgBitLength = ois.readInt();
+	
+		gk = new BigInteger[numOfChoices];
+		
+		C_over_gk = new BigInteger[numOfChoices];
+		
+		keys = new BigInteger[numOfChoices];
+		
+		// For each N = numOfChoices we have in the 1-of-N OT protocol...
+		for (int i = 0; i < numOfChoices; i++) {
+			
+			// choose random integer k in Z_q
+			// also known as r in the paper
+		    BigInteger k = (new BigInteger(q.bitLength(), rnd)).mod(q);
+		    
+		    // Set gk = PK_i = g^k mod p
+		    // Also known as PK_\sigma
+		    gk[i] = g.modPow(k, p);
+		    
+		    // C * PK_i^{-1} mod p
+		    // Also known as PK_{\sigma-1}
+		    C_over_gk[i] = C.multiply(gk[i].modInverse(p)).mod(p);
+		    
+		    // PK_i^r
+		    // Also known as g^r^k for the ith index
+		    keys[i] = gr.modPow(k, p);
+		}
+		
     }
 
     private void step1() throws Exception {

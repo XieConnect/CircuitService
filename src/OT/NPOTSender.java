@@ -1,4 +1,5 @@
 // Copyright (C) 2010 by Yan Huang <yhuang@virginia.edu>
+// Copyright (C) 2011 by Nathaniel Husted <nhusted@indiana.edu>
 
 package OT;
 
@@ -8,44 +9,89 @@ import java.io.*;
 import Cipher.Cipher;
 import Utils.*;
 
+/**
+ * 
+ * This class implements the Sender portion of the Naor-Pinkas OT protocol.
+ * 
+ * <p>
+ * 
+ * The description of this protocol can be found in their 2001 paper "Efficient
+ * oblivious transfer protocols" published in the Proceedings of the twelfth
+ * annual ACM-SIAM symposium on Discrete algorithms.
+ *
+ * @author yhuang
+ * @author nhusted 
+ * @see Sender
+ */
 public class NPOTSender extends Sender {
 
+	/** Random number generate */
     private static Random rnd = new Random();
+    
+    /** Certainty for Prime generation */
     private static final int certainty = 80;
 
+    /** Bit length of q */
     private final static int qLength = 512; //512;
+    
+    /** Bit length of p */
     private final static int pLength = 15360; //15360;
 
+    /** Variables as they relate to the notation in the Naor-Pinkas OT paper */
     private BigInteger p, q, g, C, r;
     private BigInteger Cr, gr;
 
+    /**
+     * Constructor
+     * @param numOfPairs
+     * @param msgBitLength
+     * @param in
+     * @param out
+     * @throws Exception
+     */
     public NPOTSender(int numOfPairs, int msgBitLength, ObjectInputStream in,
 		      ObjectOutputStream out) throws Exception {
-	super(numOfPairs, msgBitLength, in, out);
-
-	StopWatch.pointTimeStamp("right before NPOT public key generation");
-	initialize();
-	StopWatch.taskTimeStamp("NPOT public key generation");
+		super(numOfPairs, msgBitLength, in, out);
+	
+		StopWatch.pointTimeStamp("right before NPOT public key generation");
+		initialize();
+		StopWatch.taskTimeStamp("NPOT public key generation");
     }
 
     public void execProtocol(BigInteger[][] msgPairs) throws Exception {
-	super.execProtocol(msgPairs);
-
-	step1();
+		super.execProtocol(msgPairs);
+	
+		step1();
     }
 
     private void initialize() throws Exception {
 	File keyfile = new File("NPOTKey");
 	if (keyfile.exists()) {
+		
+		// If the keyfile exists, read all our key related objects from it.
+		
 	    FileInputStream fin = new FileInputStream(keyfile);
 	    ObjectInputStream fois = new ObjectInputStream(fin);
 
+	    
+	    // random C -- constant
 	    C = (BigInteger) fois.readObject();
+	    
+	    // prime of length pLength
 	    p = (BigInteger) fois.readObject();
+	    
+	    // prime of length qlength
 	    q = (BigInteger) fois.readObject();
+	    
+	    // generator in z^*_p
 	    g = (BigInteger) fois.readObject();
+	    
+	    // g^r
 	    gr = (BigInteger) fois.readObject();
+	    
+	    // random r -- constant
 	    r = (BigInteger) fois.readObject();
+	    
 	    fois.close();
 
 	    oos.writeObject(C);
@@ -56,25 +102,56 @@ public class NPOTSender extends Sender {
 	    oos.writeInt(msgBitLength);
 	    oos.flush();
 
+	    // C^r mod p
 	    Cr = C.modPow(r, p);
 	} else {
+		
+		// Our key file doesn't exist, so we need to generate them
+		
 	    BigInteger pdq;
+	    
+	    // qlength-bit random prime
 	    q = new BigInteger(qLength, certainty, rnd);
 
 	    do {
-		pdq = new BigInteger(pLength - qLength, rnd);
-		pdq = pdq.clearBit(0); 
-		p = q.multiply(pdq).add(BigInteger.ONE);
+	    	// pdq is a random integer of length pLength-qLength bits
+			pdq = new BigInteger(pLength - qLength, rnd);
+			
+			// Clear the first bit for our addition
+			pdq = pdq.clearBit(0); 
+			
+			// Question: Does PDQ have to be prime?
+			
+			// (p = q * pdq + 1) == pdq = q / (p - 1) && pdq = true
+			p = q.multiply(pdq).add(BigInteger.ONE);
+			
+			// This means q is a factor of Z^*_p's order (\phi). 
+			
+			// We must make sure that p is prime
 	    } while (!p.isProbablePrime(certainty));
 
 	    do {
-		g = new BigInteger(pLength - 1, rnd); 
+	    	// Create a random number g
+	    	
+	    	g = new BigInteger(pLength - 1, rnd); 
+	    	
+	    	// g must not be the inverse of pdq or q in mod p,
+	    	// i.e. g^pdq mod p != 1 && g^q mod p != 1. 
+	    	
+	    	// This somehow gives us a test that g is a generator in Z^*_q
+	    	// but I'm not sure how it work. 
+	    	
 	    } while ((g.modPow(pdq, p)).equals(BigInteger.ONE)
 		     || (g.modPow(q, p)).equals(BigInteger.ONE));
 			
 
+	    // r is a random number in group Z_q
 	    r = (new BigInteger(qLength, rnd)).mod(q);
+	    
+	    // g^r is a random element in z^*_q
 	    gr = g.modPow(r, p);
+
+	    // C is a random element in Z_q
 	    C = (new BigInteger(qLength, rnd)).mod(q);
 
 	    oos.writeObject(C);
@@ -85,6 +162,7 @@ public class NPOTSender extends Sender {
 	    oos.writeInt(msgBitLength);
 	    oos.flush();
 
+	    // C is a random element C^r belonging to Z^*_p
 	    Cr = C.modPow(r, p);
 
 	    FileOutputStream fout = new FileOutputStream(keyfile);

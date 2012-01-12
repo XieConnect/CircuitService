@@ -10,7 +10,7 @@ import Cipher.Cipher;
 
 /**
  * 
- * This class implements the Sender portion of the Naor-Pinkas OT protocol.
+ * This class implements the Chooser portion of the Naor-Pinkas OT protocol.
  * 
  * <p>
  * 
@@ -44,10 +44,16 @@ public class NPOTReceiver extends Receiver {
     }
 
     public void execProtocol(BigInteger choices) throws Exception {
-	super.execProtocol(choices);
-
-	step1();
-	step2();
+		super.execProtocol(choices);
+	
+		step1();
+		
+		// How do we make sure the other party replies in between steps?
+		// Must be depending upon correct protocol that can be followed as
+		// the only controls I've found are the dependence on readObject
+		// blocking until the protocol is ready to proceed.
+		// -nhusted
+		step2();
     }
 
     /**
@@ -105,7 +111,10 @@ public class NPOTReceiver extends Receiver {
 		}
 		
     }
-
+	/**
+	 * 
+	 * @throws Exception
+	 */
     private void step1() throws Exception {
     	
     	// Create our PK array of length numchoices with two options each
@@ -132,12 +141,24 @@ public class NPOTReceiver extends Receiver {
 		oos.flush();
     }
 
+    /**
+     * 
+     * @throws Exception
+     */
     private void step2() throws Exception {
+    	
+    // Read in the list of messages from the sender. 
+    // [MessageIndex][0/1 sigma value]
 	BigInteger[][] msg = (BigInteger[][]) ois.readObject();
 
+	// Data is an array for each message
 	data = new BigInteger[numOfChoices];
+	
 	for (int i = 0; i < numOfChoices; i++) {
+		// For each choice we determine what we selected for sigma
 	    int sigma = choices.testBit(i) ? 1 : 0;
+	    
+	    // We decrypt the key for msg_i
 	    data[i] = Cipher.decrypt(keys[i], msg[i][sigma], msgBitLength);
 	}
     }

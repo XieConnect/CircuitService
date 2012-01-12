@@ -38,10 +38,10 @@ class BitMatrix {
 
     /**
      * 
-     * Generate a bitmatrix of nColsxnRows where each
+     * Generate a BitMatrix of nCols by nRows where each
      * column is represented by a BigInteger and each row is represented
      * by a bit in the BigInteger thus each element in the data array
-     * is of size nRows-bits. Each BigInteger is chosen randomly.
+     * is of size nRows bits. Each BigInteger is chosen randomly.
      * 
      * @param rnd A Pseudo-Random Function
      */

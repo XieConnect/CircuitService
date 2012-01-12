@@ -123,7 +123,10 @@ public class OTExtSender extends Sender {
 		// s is a random BitString of size k1.
 		s = new BigInteger(SecurityParameter.k1, rnd);
 	
+		// exec protocol with bit string s.
 		rcver.execProtocol(s);
+		
+		
 		keys = rcver.getData();
     }
 }

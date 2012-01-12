@@ -22,6 +22,7 @@ import Utils.*;
  * @author yhuang
  * @author nhusted 
  * @see Sender
+ * @see OTExctReceiver
  */
 public class NPOTSender extends Sender {
 
@@ -132,7 +133,6 @@ public class NPOTSender extends Sender {
 
 	    do {
 	    	// Create a random number g
-	    	
 	    	g = new BigInteger(pLength - 1, rnd); 
 	    	
 	    	// g must not be the inverse of pdq or q in mod p,
@@ -181,19 +181,34 @@ public class NPOTSender extends Sender {
     }
 
     private void step1() throws Exception {
+    	
+    // Get PK_0
 	BigInteger[] pk0 = (BigInteger[]) ois.readObject();
+	
+	// Create PK_1 with room for numOfPairs messages
 	BigInteger[] pk1 = new BigInteger[numOfPairs];
+	
+	// Create array of messages numOfPairs long. Each message has two slots.
 	BigInteger[][] msg = new BigInteger[numOfPairs][2];
 
 	for (int i = 0; i < numOfPairs; i++) {
+		// Calculat PK0_i = PK0_i ^ r mod p
 	    pk0[i] = pk0[i].modPow(r, p);
+	    
+	    // Calculate PK1_i = C^r * pk0_i * (pk0_i^-1 mod p) mod p. 
 	    pk1[i] = Cr.multiply(pk0[i].modInverse(p)).mod(p);
 
+	    // m_i^0 = H(pk0_i, m_i^0, msgLength)
 	    msg[i][0] = Cipher.encrypt(pk0[i], msgPairs[i][0], msgBitLength);
+	    
+	    // m_i^1 = H(pk1_i, m_^1, msgLength)
 	    msg[i][1] = Cipher.encrypt(pk1[i], msgPairs[i][1], msgBitLength);
 	}
 
+	// Write the message array out
 	oos.writeObject(msg);
+	
+	// Flush the buffer to send
 	oos.flush();
     }
 }

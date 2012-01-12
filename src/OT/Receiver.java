@@ -14,16 +14,16 @@ public abstract class Receiver {
     protected BigInteger[] data = null;
 
     public Receiver(int numOfChoices, ObjectInputStream in, ObjectOutputStream out) {
-	this.numOfChoices = numOfChoices;
-	ois = in;
-	oos = out;
+		this.numOfChoices = numOfChoices;
+		ois = in;
+		oos = out;
     }
 
     public void execProtocol(BigInteger choices) throws Exception {
-	this.choices = choices;
+    	this.choices = choices;
     }
 
     public BigInteger[] getData() {
-	return data;
+    	return data;
     }
 }

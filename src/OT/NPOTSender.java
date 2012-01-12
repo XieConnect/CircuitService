@@ -154,6 +154,7 @@ public class NPOTSender extends Sender {
 	    // C is a random element in Z_q
 	    C = (new BigInteger(qLength, rnd)).mod(q);
 
+	    // Sne dthe key values to the Receiver
 	    oos.writeObject(C);
 	    oos.writeObject(p);
 	    oos.writeObject(q);
@@ -165,6 +166,9 @@ public class NPOTSender extends Sender {
 	    // C is a random element C^r belonging to Z^*_p
 	    Cr = C.modPow(r, p);
 
+	    
+	    // Now write the key values to a file for later use
+	    
 	    FileOutputStream fout = new FileOutputStream(keyfile);
 	    ObjectOutputStream foos = new ObjectOutputStream(fout);
 

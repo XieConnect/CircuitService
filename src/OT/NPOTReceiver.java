@@ -50,7 +50,15 @@ public class NPOTReceiver extends Receiver {
 	step2();
     }
 
+    /**
+     * Initializes the OT transfer on the Receiver end. The NPOTReceiver 
+     * relates to the "Chooser" in the Nao-Pinkas protocol.
+     * 
+     * @throws Exception
+     */
     private void initialize() throws Exception {
+    	
+    	// We're assuming the NPOTSender is already connected to us.
     	
     	// Constant 
 		C  = (BigInteger) ois.readObject();
@@ -99,18 +107,29 @@ public class NPOTReceiver extends Receiver {
     }
 
     private void step1() throws Exception {
-	pk = new BigInteger[numOfChoices][2];
-	BigInteger[] pk0 = new BigInteger[numOfChoices];
-	for (int i = 0; i < numOfChoices; i++) {
-	    int sigma = choices.testBit(i) ? 1 : 0;
-	    pk[i][sigma] = gk[i];
-	    pk[i][1-sigma] = C_over_gk[i];
-
-	    pk0[i] = pk[i][0];
-	}
-
-	oos.writeObject(pk0);
-	oos.flush();
+    	
+    	// Create our PK array of length numchoices with two options each
+		pk = new BigInteger[numOfChoices][2];
+		
+		// Create a PK0 array of numChoices length
+		BigInteger[] pk0 = new BigInteger[numOfChoices];
+		for (int i = 0; i < numOfChoices; i++) {
+			// FOr each choice determine the bit we are interested in (1 || 0)
+		    int sigma = choices.testBit(i) ? 1 : 0;
+		    
+		    // Set the choice we want to g^k_i
+		    pk[i][sigma] = gk[i];
+		    
+		    // Set the choice we don't want to C / (g^k_i)
+		    pk[i][1-sigma] = C_over_gk[i];
+	
+		    // Set PK0_i to pk_i^0 whether or not 0 is our sigma.
+		    pk0[i] = pk[i][0];
+		}
+	
+		// Write PK0 to our OOS to send to NPOTSender and flush the buffer
+		oos.writeObject(pk0);
+		oos.flush();
     }
 
     private void step2() throws Exception {

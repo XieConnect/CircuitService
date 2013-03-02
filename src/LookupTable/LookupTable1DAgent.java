@@ -5,11 +5,12 @@ package LookupTable;
 import java.math.BigInteger;
 
 public abstract class LookupTable1DAgent {
-    protected int nCols;
-    protected int nCIBits, nBits;
+  protected int nCols;
+  protected int nCIBits, nBits;
 
-    protected boolean extCase = false;
+  protected boolean extCase = false;
 
-    public abstract BigInteger[] execute(BigInteger[] ciBitLabels);
-    public abstract void setTable(int[] tab);
+  public abstract BigInteger[] execute(BigInteger[] ciBitLabels);
+
+  public abstract void setTable(int[] tab);
 }

@@ -2,52 +2,50 @@
 
 package Test;
 
-import java.util.*;
-import java.math.*;
-
+import Program.HammingDistanceServer;
+import Utils.StopWatch;
 import jargs.gnu.CmdLineParser;
 
-import Utils.*;
-import Program.*;
+import java.math.BigInteger;
+import java.util.Random;
 
 class TestHammingServer {
-    static BigInteger bits;
-    static int n;
-    
-    static Random rnd = new Random();
+  static BigInteger bits;
+  static int n;
 
-    private static void printUsage() {
-	System.out.println("Usage: java TestHammingServer [{-n, --bit-length} length]");
+  static Random rnd = new Random();
+
+  private static void printUsage() {
+    System.out.println("Usage: java TestHammingServer [{-n, --bit-length} length]");
+  }
+
+  private static void process_cmdline_args(String[] args) {
+    CmdLineParser parser = new CmdLineParser();
+    CmdLineParser.Option optionBitLength = parser.addIntegerOption('n', "bit-length");
+
+    try {
+      parser.parse(args);
+    } catch (CmdLineParser.OptionException e) {
+      System.err.println(e.getMessage());
+      printUsage();
+      System.exit(2);
     }
 
-    private static void process_cmdline_args(String[] args) {
-	CmdLineParser parser = new CmdLineParser();
-	CmdLineParser.Option optionBitLength = parser.addIntegerOption('n', "bit-length");
+    n = ((Integer) parser.getOptionValue(optionBitLength, new Integer(100))).intValue();
+  }
 
-	try {
-	    parser.parse(args);
-	}
-	catch (CmdLineParser.OptionException e) {
-	    System.err.println(e.getMessage());
-	    printUsage();
-	    System.exit(2);
-	}
+  private static void generateData() throws Exception {
+    bits = new BigInteger(n, rnd);
+  }
 
-	n = ((Integer) parser.getOptionValue(optionBitLength, new Integer(100))).intValue();
-    }
+  public static void main(String[] args) throws Exception {
 
-    private static void generateData() throws Exception {
-	bits = new BigInteger(n, rnd);
-    }
+    StopWatch.pointTimeStamp("Starting program");
+    process_cmdline_args(args);
 
-    public static void main(String[] args) throws Exception {
+    generateData();
 
-	StopWatch.pointTimeStamp("Starting program");
-	process_cmdline_args(args);
-
-	generateData();
-	    
-	HammingDistanceServer hammingserver = new HammingDistanceServer(bits, n);
-	hammingserver.run();
-    }
+    HammingDistanceServer hammingserver = new HammingDistanceServer(bits, n);
+    hammingserver.run();
+  }
 }

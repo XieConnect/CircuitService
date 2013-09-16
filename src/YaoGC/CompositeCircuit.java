@@ -6,6 +6,15 @@ public abstract class CompositeCircuit extends Circuit {
   protected Circuit[] subCircuits;
   protected int nSubCircuits;
 
+  /**
+   * Constructor
+   * @param inDegree number of inputs
+   * @param outDegree number of outputs
+   * @param nSubCircuits number of sub-circuits
+   * @param name
+   * @author Yan Huang
+   * @author Wei Xie
+   */
   public CompositeCircuit(int inDegree, int outDegree, int nSubCircuits, String name) {
     super(inDegree, outDegree, name);
 
@@ -14,6 +23,13 @@ public abstract class CompositeCircuit extends Circuit {
     subCircuits = new Circuit[nSubCircuits];
   }
 
+  /**
+   * Major construction logic
+   * Need to override a few functions being called here
+   * @throws Exception
+   * @author Yan Huang
+   * @author Wei Xie
+   */
   public void build() throws Exception {
     createInputWires();
     createSubCircuits();

@@ -10,59 +10,59 @@ import jargs.gnu.CmdLineParser;
 import java.util.Random;
 
 class TestSWServer {
-  static String serverCodons;
-  static boolean autogen;
-  static int n;
-  static String matrixFile;
+    static String serverCodons;
+    static boolean autogen;
+    static int n;
+    static String matrixFile;
 
-  static Random rnd = new Random();
+    static Random rnd = new Random();
 
-  private static void printUsage() {
-    System.out.println("Usage: java TestSWServer [{-c, --codons} codons] [{-L, --max-bit-length} L] [{-a, --autogen}] [{-n, --protein-length} length]");
-  }
-
-  private static void process_cmdline_args(String[] args) {
-    CmdLineParser parser = new CmdLineParser();
-    CmdLineParser.Option optionCodons = parser.addStringOption('c', "codons");
-    CmdLineParser.Option optionMatrixFile = parser.addStringOption('m', "matrix-file");
-    CmdLineParser.Option optionAuto = parser.addBooleanOption('a', "autogen");
-    CmdLineParser.Option optionCodonLength = parser.addIntegerOption('n', "protein-length");
-
-    try {
-      parser.parse(args);
-    } catch (CmdLineParser.OptionException e) {
-      System.err.println(e.getMessage());
-      printUsage();
-      System.exit(2);
+    private static void printUsage() {
+        System.out.println("Usage: java TestSWServer [{-c, --codons} codons] [{-L, --max-bit-length} L] [{-a, --autogen}] [{-n, --protein-length} length]");
     }
 
-    serverCodons = (String) parser.getOptionValue(optionCodons, new String("A"));
-    matrixFile = (String) parser.getOptionValue(optionMatrixFile, new String("matrices/blosum20x20"));
-    autogen = (Boolean) parser.getOptionValue(optionAuto, false);
-    n = ((Integer) parser.getOptionValue(optionCodonLength, new Integer(100))).intValue();
-  }
+    private static void process_cmdline_args(String[] args) {
+        CmdLineParser parser = new CmdLineParser();
+        CmdLineParser.Option optionCodons = parser.addStringOption('c', "codons");
+        CmdLineParser.Option optionMatrixFile = parser.addStringOption('m', "matrix-file");
+        CmdLineParser.Option optionAuto = parser.addBooleanOption('a', "autogen");
+        CmdLineParser.Option optionCodonLength = parser.addIntegerOption('n', "protein-length");
 
-  static void generateData() throws Exception {
-    StringBuilder sb = new StringBuilder("");
-    for (int i = 0; i < n; i++) {
-      int r = rnd.nextInt(SmithWatermanCommon.codons.length());
-      sb.append(SmithWatermanCommon.codons.charAt(r));
+        try {
+            parser.parse(args);
+        } catch (CmdLineParser.OptionException e) {
+            System.err.println(e.getMessage());
+            printUsage();
+            System.exit(2);
+        }
+
+        serverCodons = (String) parser.getOptionValue(optionCodons, new String("A"));
+        matrixFile = (String) parser.getOptionValue(optionMatrixFile, new String("matrices/blosum20x20"));
+        autogen = (Boolean) parser.getOptionValue(optionAuto, false);
+        n = ((Integer) parser.getOptionValue(optionCodonLength, new Integer(100))).intValue();
     }
 
-    serverCodons = sb.toString();
-  }
+    static void generateData() throws Exception {
+        StringBuilder sb = new StringBuilder("");
+        for (int i = 0; i < n; i++) {
+            int r = rnd.nextInt(SmithWatermanCommon.codons.length());
+            sb.append(SmithWatermanCommon.codons.charAt(r));
+        }
 
-  public static void main(String[] args) throws Exception {
+        serverCodons = sb.toString();
+    }
 
-    StopWatch.pointTimeStamp("Starting program");
-    process_cmdline_args(args);
-    SmithWatermanCommon.loadScoreMatrix(matrixFile);
+    public static void main(String[] args) throws Exception {
 
-    if (autogen)
-      generateData();
+        StopWatch.pointTimeStamp("Starting program");
+        process_cmdline_args(args);
+        SmithWatermanCommon.loadScoreMatrix(matrixFile);
 
-    System.out.println(serverCodons);
-    SmithWatermanServer edserver = new SmithWatermanServer(serverCodons);
-    edserver.run();
-  }
+        if (autogen)
+            generateData();
+
+        System.out.println(serverCodons);
+        SmithWatermanServer edserver = new SmithWatermanServer(serverCodons);
+        edserver.run();
+    }
 }

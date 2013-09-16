@@ -13,51 +13,51 @@ import java.math.BigInteger;
 import java.util.Random;
 
 class TestEDClient {
-  static BigInteger dna;
-  static boolean autogen;
-  static int n;
+    static BigInteger dna;
+    static boolean autogen;
+    static int n;
 
-  static Random rnd = new Random();
+    static Random rnd = new Random();
 
-  private static void printUsage() {
-    System.out.println("Usage: java TestEDClient [{-d, --dna} dna] [{-L, --EDBitLength} L] [{-a, --autogen}] [{-n, --DNALength} length] [{-s, --server} servername]");
-  }
-
-  private static void process_cmdline_args(String[] args) {
-    CmdLineParser parser = new CmdLineParser();
-    CmdLineParser.Option optionServerIPname = parser.addStringOption('s', "server");
-    CmdLineParser.Option optionAuto = parser.addBooleanOption('a', "autogen");
-    CmdLineParser.Option optionDNALength = parser.addIntegerOption('n', "DNALength");
-    CmdLineParser.Option optionIterCount = parser.addIntegerOption('r', "iteration");
-    CmdLineParser.Option optionSigma = parser.addIntegerOption('g', "sigma");
-
-    try {
-      parser.parse(args);
-    } catch (CmdLineParser.OptionException e) {
-      System.err.println(e.getMessage());
-      printUsage();
-      System.exit(2);
+    private static void printUsage() {
+        System.out.println("Usage: java TestEDClient [{-d, --dna} dna] [{-L, --EDBitLength} L] [{-a, --autogen}] [{-n, --DNALength} length] [{-s, --server} servername]");
     }
 
-    autogen = (Boolean) parser.getOptionValue(optionAuto, false);
-    n = ((Integer) parser.getOptionValue(optionDNALength, new Integer(100))).intValue();
-    ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));
-    Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(10))).intValue();
-    EditDistanceCommon.sigma = ((Integer) parser.getOptionValue(optionSigma, new Integer(2))).intValue();
-  }
+    private static void process_cmdline_args(String[] args) {
+        CmdLineParser parser = new CmdLineParser();
+        CmdLineParser.Option optionServerIPname = parser.addStringOption('s', "server");
+        CmdLineParser.Option optionAuto = parser.addBooleanOption('a', "autogen");
+        CmdLineParser.Option optionDNALength = parser.addIntegerOption('n', "DNALength");
+        CmdLineParser.Option optionIterCount = parser.addIntegerOption('r', "iteration");
+        CmdLineParser.Option optionSigma = parser.addIntegerOption('g', "sigma");
 
-  private static void generateData() throws Exception {
-    dna = new BigInteger(EditDistanceCommon.sigma * n, rnd);
-  }
+        try {
+            parser.parse(args);
+        } catch (CmdLineParser.OptionException e) {
+            System.err.println(e.getMessage());
+            printUsage();
+            System.exit(2);
+        }
 
-  public static void main(String[] args) throws Exception {
-    StopWatch.pointTimeStamp("Starting program");
-    process_cmdline_args(args);
+        autogen = (Boolean) parser.getOptionValue(optionAuto, false);
+        n = ((Integer) parser.getOptionValue(optionDNALength, new Integer(100))).intValue();
+        ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));
+        Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(10))).intValue();
+        EditDistanceCommon.sigma = ((Integer) parser.getOptionValue(optionSigma, new Integer(2))).intValue();
+    }
 
-    if (autogen)
-      generateData();
+    private static void generateData() throws Exception {
+        dna = new BigInteger(EditDistanceCommon.sigma * n, rnd);
+    }
 
-    EditDistanceClient edclient = new EditDistanceClient(dna, n);
-    edclient.run();
-  }
+    public static void main(String[] args) throws Exception {
+        StopWatch.pointTimeStamp("Starting program");
+        process_cmdline_args(args);
+
+        if (autogen)
+            generateData();
+
+        EditDistanceClient edclient = new EditDistanceClient(dna, n);
+        edclient.run();
+    }
 }

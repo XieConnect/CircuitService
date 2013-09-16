@@ -36,148 +36,148 @@ import java.util.Observer;
  */
 public class TransitiveObservable {
 
-  List<TransitiveObserver> observers = new ArrayList<TransitiveObserver>();
+    List<TransitiveObserver> observers = new ArrayList<TransitiveObserver>();
 
-  boolean changed = false;
+    boolean changed = false;
 
-  List<Socket> exports = new ArrayList<Socket>();
+    List<Socket> exports = new ArrayList<Socket>();
 
-  static class Socket {
-    Wire[] wires;
-    int idx;
+    static class Socket {
+        Wire[] wires;
+        int idx;
 
-    public Socket(Wire[] ws, int i) {
-      wires = ws;
-      idx = i;
+        public Socket(Wire[] ws, int i) {
+            wires = ws;
+            idx = i;
+        }
+
+        public void updateSocket(Wire w) {
+            wires[idx] = w;
+        }
+
+        public boolean equals(Socket sock) {
+            if (this == sock)
+                return true;
+
+            if (sock != null) {
+                return (wires == sock.wires) && (idx == sock.idx);
+            }
+
+            return false;
+        }
     }
 
-    public void updateSocket(Wire w) {
-      wires[idx] = w;
+    /**
+     * Constructs a new {@code Observable} object.
+     */
+    public TransitiveObservable() {
+        super();
     }
 
-    public boolean equals(Socket sock) {
-      if (this == sock)
-        return true;
-
-      if (sock != null) {
-        return (wires == sock.wires) && (idx == sock.idx);
-      }
-
-      return false;
+    /**
+     * Adds the specified observer to the list of observers. If it is already
+     * registered, it is not added a second time.
+     *
+     * @param observer the Observer to add.
+     */
+    public void addObserver(TransitiveObserver observer, Socket sock) {
+        if (observer == null) {
+            throw new NullPointerException();
+        }
+        synchronized (this) {
+            // if (!observers.contains(observer))
+            observers.add(observer);
+            exports.add(sock);
+        }
     }
-  }
 
-  /**
-   * Constructs a new {@code Observable} object.
-   */
-  public TransitiveObservable() {
-    super();
-  }
-
-  /**
-   * Adds the specified observer to the list of observers. If it is already
-   * registered, it is not added a second time.
-   *
-   * @param observer the Observer to add.
-   */
-  public void addObserver(TransitiveObserver observer, Socket sock) {
-    if (observer == null) {
-      throw new NullPointerException();
+    /**
+     * Clears the changed flag for this {@code Observable}. After calling
+     * {@code clearChanged()}, {@code hasChanged()} will return {@code false}.
+     */
+    protected void clearChanged() {
+        changed = false;
     }
-    synchronized (this) {
-      // if (!observers.contains(observer))
-      observers.add(observer);
-      exports.add(sock);
+
+    /**
+     * Returns the number of observers registered to this {@code Observable}.
+     *
+     * @return the number of observers.
+     */
+    public int countObservers() {
+        return observers.size();
     }
-  }
 
-  /**
-   * Clears the changed flag for this {@code Observable}. After calling
-   * {@code clearChanged()}, {@code hasChanged()} will return {@code false}.
-   */
-  protected void clearChanged() {
-    changed = false;
-  }
-
-  /**
-   * Returns the number of observers registered to this {@code Observable}.
-   *
-   * @return the number of observers.
-   */
-  public int countObservers() {
-    return observers.size();
-  }
-
-  /**
-   * Removes the specified observer from the list of observers. Passing null
-   * won't do anything.
-   *
-   * @param observer the observer to remove.
-   */
-  public synchronized void deleteObserver(TransitiveObserver observer, Socket sock) {
-    observers.remove(observer);
-    exports.remove(sock);
-  }
-
-  /**
-   * Removes all observers from the list of observers.
-   */
-  public synchronized void deleteObservers() {
-    observers.clear();
-    exports.clear();
-  }
-
-  /**
-   * Returns the changed flag for this {@code Observable}.
-   *
-   * @return {@code true} when the changed flag for this {@code Observable} is
-   *         set, {@code false} otherwise.
-   */
-  public boolean hasChanged() {
-    return changed;
-  }
-
-  /**
-   * If {@code hasChanged()} returns {@code true}, calls the {@code update()}
-   * method for every observer in the list of observers using null as the
-   * argument. Afterwards, calls {@code clearChanged()}.
-   * <p/>
-   * Equivalent to calling {@code notifyObservers(null)}.
-   */
-  public void notifyObservers() {
-    notifyObservers(null);
-  }
-
-  /**
-   * If {@code hasChanged()} returns {@code true}, calls the {@code update()}
-   * method for every Observer in the list of observers using the specified
-   * argument. Afterwards calls {@code clearChanged()}.
-   *
-   * @param data the argument passed to {@code update()}.
-   */
-  public void notifyObservers(Object data) {
-    int size = 0;
-    TransitiveObserver[] arrays = null;
-    synchronized (this) {
-      if (hasChanged()) {
-        clearChanged();
-        size = observers.size();
-        arrays = new TransitiveObserver[size];
-        observers.toArray(arrays);
-      }
+    /**
+     * Removes the specified observer from the list of observers. Passing null
+     * won't do anything.
+     *
+     * @param observer the observer to remove.
+     */
+    public synchronized void deleteObserver(TransitiveObserver observer, Socket sock) {
+        observers.remove(observer);
+        exports.remove(sock);
     }
-    if (arrays != null) {
-      for (TransitiveObserver observer : arrays) {
-        observer.update(this, data);
-      }
-    }
-  }
 
-  /**
-   * Sets the changed flag for this {@code Observable}. After calling
-   * {@code setChanged()}, {@code hasChanged()} will return {@code true}.
-   */
-  protected void setChanged() {
-    changed = true;
-  }
+    /**
+     * Removes all observers from the list of observers.
+     */
+    public synchronized void deleteObservers() {
+        observers.clear();
+        exports.clear();
+    }
+
+    /**
+     * Returns the changed flag for this {@code Observable}.
+     *
+     * @return {@code true} when the changed flag for this {@code Observable} is
+     *         set, {@code false} otherwise.
+     */
+    public boolean hasChanged() {
+        return changed;
+    }
+
+    /**
+     * If {@code hasChanged()} returns {@code true}, calls the {@code update()}
+     * method for every observer in the list of observers using null as the
+     * argument. Afterwards, calls {@code clearChanged()}.
+     * <p/>
+     * Equivalent to calling {@code notifyObservers(null)}.
+     */
+    public void notifyObservers() {
+        notifyObservers(null);
+    }
+
+    /**
+     * If {@code hasChanged()} returns {@code true}, calls the {@code update()}
+     * method for every Observer in the list of observers using the specified
+     * argument. Afterwards calls {@code clearChanged()}.
+     *
+     * @param data the argument passed to {@code update()}.
+     */
+    public void notifyObservers(Object data) {
+        int size = 0;
+        TransitiveObserver[] arrays = null;
+        synchronized (this) {
+            if (hasChanged()) {
+                clearChanged();
+                size = observers.size();
+                arrays = new TransitiveObserver[size];
+                observers.toArray(arrays);
+            }
+        }
+        if (arrays != null) {
+            for (TransitiveObserver observer : arrays) {
+                observer.update(this, data);
+            }
+        }
+    }
+
+    /**
+     * Sets the changed flag for this {@code Observable}. After calling
+     * {@code setChanged()}, {@code hasChanged()} will return {@code true}.
+     */
+    protected void setChanged() {
+        changed = true;
+    }
 }

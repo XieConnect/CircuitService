@@ -26,140 +26,140 @@ import java.util.Random;
  */
 
 public class NPOTReceiver extends Receiver {
-  private static Random rnd = new Random();
+    private static Random rnd = new Random();
 
-  private int msgBitLength;
-  private BigInteger p, q, g, C;
-  private BigInteger gr;
+    private int msgBitLength;
+    private BigInteger p, q, g, C;
+    private BigInteger gr;
 
-  private BigInteger[] gk, C_over_gk;
-  private BigInteger[][] pk;
+    private BigInteger[] gk, C_over_gk;
+    private BigInteger[][] pk;
 
-  private BigInteger[] keys;
+    private BigInteger[] keys;
 
-  public NPOTReceiver(int numOfChoices,
-                      ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    super(numOfChoices, in, out);
+    public NPOTReceiver(int numOfChoices,
+                        ObjectInputStream in, ObjectOutputStream out) throws Exception {
+        super(numOfChoices, in, out);
 
-    initialize();
-  }
-
-  public void execProtocol(BigInteger choices) throws Exception {
-    super.execProtocol(choices);
-
-    step1();
-
-    // How do we make sure the other party replies in between steps?
-    // Must be depending upon correct protocol that can be followed as
-    // the only controls I've found are the dependence on readObject
-    // blocking until the protocol is ready to proceed.
-    // -nhusted
-    step2();
-  }
-
-  /**
-   * Initializes the OT transfer on the Receiver end. The NPOTReceiver
-   * relates to the "Chooser" in the Nao-Pinkas protocol.
-   *
-   * @throws Exception
-   */
-  private void initialize() throws Exception {
-
-    // We're assuming the NPOTSender is already connected to us.
-
-    // Constant
-    C = (BigInteger) ois.readObject();
-
-    // p is pLength-bit prime #
-    p = (BigInteger) ois.readObject();
-
-    // q is qLength-bit prime #
-    q = (BigInteger) ois.readObject();
-
-    // g is a generator in group Z^*_p
-    g = (BigInteger) ois.readObject();
-
-    // g^r element of z^*_p;
-    gr = (BigInteger) ois.readObject();
-
-    // Size of msg
-    msgBitLength = ois.readInt();
-
-    gk = new BigInteger[numOfChoices];
-
-    C_over_gk = new BigInteger[numOfChoices];
-
-    keys = new BigInteger[numOfChoices];
-
-    // For each N = numOfChoices we have in the 1-of-N OT protocol...
-    for (int i = 0; i < numOfChoices; i++) {
-
-      // choose random integer k in Z_q
-      // also known as r in the paper
-      BigInteger k = (new BigInteger(q.bitLength(), rnd)).mod(q);
-
-      // Set gk = PK_i = g^k mod p
-      // Also known as PK_\sigma
-      gk[i] = g.modPow(k, p);
-
-      // C * PK_i^{-1} mod p
-      // Also known as PK_{\sigma-1}
-      C_over_gk[i] = C.multiply(gk[i].modInverse(p)).mod(p);
-
-      // PK_i^r
-      // Also known as g^r^k for the ith index
-      keys[i] = gr.modPow(k, p);
+        initialize();
     }
 
-  }
+    public void execProtocol(BigInteger choices) throws Exception {
+        super.execProtocol(choices);
 
-  /**
-   * @throws Exception
-   */
-  private void step1() throws Exception {
+        step1();
 
-    // Create our PK array of length numchoices with two options each
-    pk = new BigInteger[numOfChoices][2];
-
-    // Create a PK0 array of numChoices length
-    BigInteger[] pk0 = new BigInteger[numOfChoices];
-    for (int i = 0; i < numOfChoices; i++) {
-      // FOr each choice determine the bit we are interested in (1 || 0)
-      int sigma = choices.testBit(i) ? 1 : 0;
-
-      // Set the choice we want to g^k_i
-      pk[i][sigma] = gk[i];
-
-      // Set the choice we don't want to C / (g^k_i)
-      pk[i][1 - sigma] = C_over_gk[i];
-
-      // Set PK0_i to pk_i^0 whether or not 0 is our sigma.
-      pk0[i] = pk[i][0];
+        // How do we make sure the other party replies in between steps?
+        // Must be depending upon correct protocol that can be followed as
+        // the only controls I've found are the dependence on readObject
+        // blocking until the protocol is ready to proceed.
+        // -nhusted
+        step2();
     }
 
-    // Write PK0 to our OOS to send to NPOTSender and flush the buffer
-    oos.writeObject(pk0);
-    oos.flush();
-  }
+    /**
+     * Initializes the OT transfer on the Receiver end. The NPOTReceiver
+     * relates to the "Chooser" in the Nao-Pinkas protocol.
+     *
+     * @throws Exception
+     */
+    private void initialize() throws Exception {
 
-  /**
-   * @throws Exception
-   */
-  private void step2() throws Exception {
+        // We're assuming the NPOTSender is already connected to us.
 
-    // Read in the list of messages from the sender. 
-    // [MessageIndex][0/1 sigma value]
-    BigInteger[][] msg = (BigInteger[][]) ois.readObject();
+        // Constant
+        C = (BigInteger) ois.readObject();
 
-    // Data is an array for each message
-    data = new BigInteger[numOfChoices];
+        // p is pLength-bit prime #
+        p = (BigInteger) ois.readObject();
 
-    for (int i = 0; i < numOfChoices; i++) {
-      // For each choice we determine what we selected for sigma
-      int sigma = choices.testBit(i) ? 1 : 0;
+        // q is qLength-bit prime #
+        q = (BigInteger) ois.readObject();
 
-      // We decrypt the key for msg_i
-      data[i] = Cipher.decrypt(keys[i], msg[i][sigma], msgBitLength);
+        // g is a generator in group Z^*_p
+        g = (BigInteger) ois.readObject();
+
+        // g^r element of z^*_p;
+        gr = (BigInteger) ois.readObject();
+
+        // Size of msg
+        msgBitLength = ois.readInt();
+
+        gk = new BigInteger[numOfChoices];
+
+        C_over_gk = new BigInteger[numOfChoices];
+
+        keys = new BigInteger[numOfChoices];
+
+        // For each N = numOfChoices we have in the 1-of-N OT protocol...
+        for (int i = 0; i < numOfChoices; i++) {
+
+            // choose random integer k in Z_q
+            // also known as r in the paper
+            BigInteger k = (new BigInteger(q.bitLength(), rnd)).mod(q);
+
+            // Set gk = PK_i = g^k mod p
+            // Also known as PK_\sigma
+            gk[i] = g.modPow(k, p);
+
+            // C * PK_i^{-1} mod p
+            // Also known as PK_{\sigma-1}
+            C_over_gk[i] = C.multiply(gk[i].modInverse(p)).mod(p);
+
+            // PK_i^r
+            // Also known as g^r^k for the ith index
+            keys[i] = gr.modPow(k, p);
+        }
+
     }
-  }
+
+    /**
+     * @throws Exception
+     */
+    private void step1() throws Exception {
+
+        // Create our PK array of length numchoices with two options each
+        pk = new BigInteger[numOfChoices][2];
+
+        // Create a PK0 array of numChoices length
+        BigInteger[] pk0 = new BigInteger[numOfChoices];
+        for (int i = 0; i < numOfChoices; i++) {
+            // FOr each choice determine the bit we are interested in (1 || 0)
+            int sigma = choices.testBit(i) ? 1 : 0;
+
+            // Set the choice we want to g^k_i
+            pk[i][sigma] = gk[i];
+
+            // Set the choice we don't want to C / (g^k_i)
+            pk[i][1 - sigma] = C_over_gk[i];
+
+            // Set PK0_i to pk_i^0 whether or not 0 is our sigma.
+            pk0[i] = pk[i][0];
+        }
+
+        // Write PK0 to our OOS to send to NPOTSender and flush the buffer
+        oos.writeObject(pk0);
+        oos.flush();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private void step2() throws Exception {
+
+        // Read in the list of messages from the sender.
+        // [MessageIndex][0/1 sigma value]
+        BigInteger[][] msg = (BigInteger[][]) ois.readObject();
+
+        // Data is an array for each message
+        data = new BigInteger[numOfChoices];
+
+        for (int i = 0; i < numOfChoices; i++) {
+            // For each choice we determine what we selected for sigma
+            int sigma = choices.testBit(i) ? 1 : 0;
+
+            // We decrypt the key for msg_i
+            data[i] = Cipher.decrypt(keys[i], msg[i][sigma], msgBitLength);
+        }
+    }
 }

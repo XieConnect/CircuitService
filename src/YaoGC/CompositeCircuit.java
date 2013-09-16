@@ -3,56 +3,58 @@
 package YaoGC;
 
 public abstract class CompositeCircuit extends Circuit {
-  protected Circuit[] subCircuits;
-  protected int nSubCircuits;
+    protected Circuit[] subCircuits;
+    protected int nSubCircuits;
 
-  /**
-   * Constructor
-   * @param inDegree number of inputs
-   * @param outDegree number of outputs
-   * @param nSubCircuits number of sub-circuits
-   * @param name
-   * @author Yan Huang
-   * @author Wei Xie
-   */
-  public CompositeCircuit(int inDegree, int outDegree, int nSubCircuits, String name) {
-    super(inDegree, outDegree, name);
+    /**
+     * Constructor
+     *
+     * @param inDegree     number of inputs
+     * @param outDegree    number of outputs
+     * @param nSubCircuits number of sub-circuits
+     * @param name
+     * @author Yan Huang
+     * @author Wei Xie
+     */
+    public CompositeCircuit(int inDegree, int outDegree, int nSubCircuits, String name) {
+        super(inDegree, outDegree, name);
 
-    this.nSubCircuits = nSubCircuits;
+        this.nSubCircuits = nSubCircuits;
 
-    subCircuits = new Circuit[nSubCircuits];
-  }
+        subCircuits = new Circuit[nSubCircuits];
+    }
 
-  /**
-   * Major construction logic
-   * Need to override a few functions being called here
-   * @throws Exception
-   * @author Yan Huang
-   * @author Wei Xie
-   */
-  public void build() throws Exception {
-    createInputWires();
-    createSubCircuits();
-    connectWires();
-    defineOutputWires();
-    fixInternalWires();
-  }
+    /**
+     * Major construction logic
+     * Need to override a few functions being called here
+     *
+     * @throws Exception
+     * @author Yan Huang
+     * @author Wei Xie
+     */
+    public void build() throws Exception {
+        createInputWires();
+        createSubCircuits();
+        connectWires();
+        defineOutputWires();
+        fixInternalWires();
+    }
 
-  protected void createSubCircuits() throws Exception {
-    for (int i = 0; i < nSubCircuits; i++)
-      subCircuits[i].build();
-  }
+    protected void createSubCircuits() throws Exception {
+        for (int i = 0; i < nSubCircuits; i++)
+            subCircuits[i].build();
+    }
 
-  abstract protected void connectWires() throws Exception;
+    abstract protected void connectWires() throws Exception;
 
-  abstract protected void defineOutputWires();
+    abstract protected void defineOutputWires();
 
-  protected void fixInternalWires() {
-  }
+    protected void fixInternalWires() {
+    }
 
-  protected void compute() {
-  }
+    protected void compute() {
+    }
 
-  protected void execute() {
-  }
+    protected void execute() {
+    }
 }

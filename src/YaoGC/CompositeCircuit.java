@@ -37,6 +37,9 @@ public abstract class CompositeCircuit extends Circuit {
         fixInternalWires();
     }
 
+    /**
+     * This method gets overloaded in child class
+     */
     protected void createSubCircuits() throws Exception {
         for (int i = 0; i < nSubCircuits; i++)
             subCircuits[i].build();

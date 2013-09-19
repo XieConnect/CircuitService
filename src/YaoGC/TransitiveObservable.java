@@ -35,7 +35,7 @@ import java.util.Observer;
  * @see Observer
  */
 public class TransitiveObservable {
-
+    // List of observers
     List<TransitiveObserver> observers = new ArrayList<TransitiveObserver>();
 
     boolean changed = false;

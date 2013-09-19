@@ -24,11 +24,16 @@ public class HAMMING_2L_K extends CompositeCircuit {
         super.createSubCircuits();
     }
 
+    /**
+     * Connect circuit components using wires
+     */
     protected void connectWires() throws Exception {
         for (int i = 0; i < subCircuits.length - 1; i++) {
+            // provide inputs to each XOR circuit
             inputWires[X(i)].connectTo(subCircuits[i].inputWires, 0);
             inputWires[Y(i)].connectTo(subCircuits[i].inputWires, 1);
 
+            // direct all output of XOR to the COUNTER circuit
             subCircuits[i].outputWires[0].connectTo(subCircuits[COUNTER].inputWires, i);
         }
     }

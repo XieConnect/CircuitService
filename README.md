@@ -1,4 +1,45 @@
-*** Licence
+Faster Garbled Circuit
+==========
+This framework helps accelerate garbled circuits.
+
+
+## Instructions
+
+Type "ant archive" to compile the code.
+
+To run the hamming distance application, type:
+
+    ant runhamming
+    
+It invokes the "runhamming" bash script to run both the server and the client.
+The output goes to the file ** results/hammingserverout **.
+
+To run the Levenshtein distance application, type:
+
+    ant runlevenshtein
+
+Similarly, the output goes to the file results/levenshteinserverout.
+
+To run the Smith-Waterman application, type
+
+    ant runsw
+
+Similarly, the output goes to the file results/swserverout.
+
+To run the secure AES, type:
+
+    ant runaes
+
+Similarly, the output goes to the file results/aesserverout.
+
+
+## Authors
+* Yan Huang, University of Virgina
+
+* Wei Xie, Vanderbilt University
+
+
+## Licence
 
 This software package is made freely available under the MIT license.
 
@@ -21,34 +62,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
-*** Instructions
-
-Type "ant archive" to compile the code.
-
-To run the hamming distance application, type
-
-   ant runhamming
-
-It invokes the "runhamming" bash script to run both the server and the client.
-The output goes to the file results/hammingserverout.
-
-To run the Levenshtein distance application, type
-
-   ant runlevenshtein
-
-Similarly, the output goes to the file results/levenshteinserverout.
-
-To run the Smith-Waterman application, type
-
-   ant runsw
-
-Similarly, the output goes to the file results/swserverout.
-
-To run the secure AES, type
-
-   ant runaes
-
-Similarly, the output goes to the file results/aesserverout.
-

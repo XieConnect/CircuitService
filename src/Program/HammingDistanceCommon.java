@@ -10,12 +10,14 @@ import YaoGC.State;
 import java.math.BigInteger;
 
 class HammingDistanceCommon extends ProgCommon {
+    // max bit length of input value
     static int bitVecLen;
 
     static int bitLength(int x) {
         return BigInteger.valueOf(x).bitLength();
     }
 
+    // Create the Hamming circuit
     protected static void initCircuits() {
         ccs = new Circuit[1];
         ccs[0] = new HAMMING_2L_K(bitVecLen, bitLength(bitVecLen) + 1);

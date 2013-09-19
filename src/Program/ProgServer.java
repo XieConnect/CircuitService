@@ -40,6 +40,9 @@ public abstract class ProgServer extends Program {
         super.init();
     }
 
+    /**
+     * Establish socket connection with client
+     */
     private void create_socket_and_listen() throws Exception {
         sock = new ServerSocket(serverPort);            // create socket and bind to port
         System.out.println("waiting for client to connect");
@@ -70,6 +73,9 @@ public abstract class ProgServer extends Program {
         StopWatch.taskTimeStamp("OT preparation");
     }
 
+    /**
+     * Create circuit (implement abstract method for parent)
+     */
     protected void createCircuits() throws Exception {
         Circuit.isForGarbling = true;
         Circuit.setIOStream(ProgCommon.ois, ProgCommon.oos);

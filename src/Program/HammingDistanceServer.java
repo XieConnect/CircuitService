@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class HammingDistanceServer extends ProgServer {
+    // input value
     private BigInteger sBits;
 
     private State outputState;
@@ -19,6 +20,10 @@ public class HammingDistanceServer extends ProgServer {
 
     private static final Random rnd = new Random();
 
+    /**
+     * @param bv input value (in decimal)
+     * @param length max bit length of input value
+     */
     public HammingDistanceServer(BigInteger bv, int length) {
         sBits = bv;
         HammingDistanceCommon.bitVecLen = length;
@@ -28,6 +33,7 @@ public class HammingDistanceServer extends ProgServer {
         HammingDistanceCommon.oos.writeInt(HammingDistanceCommon.bitVecLen);
         HammingDistanceCommon.oos.flush();
 
+        // create Hamming circuit
         HammingDistanceCommon.initCircuits();
 
         generateLabelPairs();

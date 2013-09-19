@@ -46,6 +46,9 @@ public abstract class ProgClient extends Program {
         sock.close();
     }
 
+    /**
+     * Implement abstract method of parent: to create circuits (before execution)
+     */
     protected void createCircuits() throws Exception {
         Circuit.isForGarbling = false;
         Circuit.setIOStream(ProgCommon.ois, ProgCommon.oos);
@@ -56,6 +59,9 @@ public abstract class ProgClient extends Program {
         StopWatch.taskTimeStamp("circuit preparation");
     }
 
+    /**
+     * Implement abstract method: to prepare OT
+     */
     protected void initializeOT() throws Exception {
         ProgCommon.oos.writeInt(otNumOfPairs);
         ProgCommon.oos.flush();

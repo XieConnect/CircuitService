@@ -14,6 +14,9 @@ public abstract class Program {
         }
     }
 
+    /**
+     * Create circuits and prepare OT
+     */
     protected void init() throws Exception {
         createCircuits();
 

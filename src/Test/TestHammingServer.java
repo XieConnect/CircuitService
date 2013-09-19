@@ -34,6 +34,9 @@ class TestHammingServer {
         n = ((Integer) parser.getOptionValue(optionBitLength, new Integer(100))).intValue();
     }
 
+    /**
+     * Generate random input value (at most of bit length n)
+     */
     private static void generateData() throws Exception {
         bits = new BigInteger(n, rnd);
     }

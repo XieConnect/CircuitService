@@ -2,6 +2,7 @@
 
 package YaoGC;
 
+// Circuit for Hamming distance
 public class HAMMING_2L_K extends CompositeCircuit {
     private final int COUNTER;
 
@@ -12,7 +13,10 @@ public class HAMMING_2L_K extends CompositeCircuit {
         COUNTER = l;
     }
 
+    // Construct the actual circuit
     protected void createSubCircuits() throws Exception {
+        // in the case of two l-bit inputs, inDegree == 2*l
+        //?? l copies of XOR to parallelize circuit in future??
         for (int i = 0; i < inDegree / 2; i++)
             subCircuits[i] = new XOR_2_1();
         subCircuits[COUNTER] = new COUNTER_L_K(inDegree / 2, outDegree);

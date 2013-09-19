@@ -27,10 +27,7 @@ public abstract class CompositeCircuit extends Circuit {
     /**
      * Major construction logic
      * Need to override a few functions being called here
-     *
-     * @throws Exception
-     * @author Yan Huang
-     * @author Wei Xie
+     * @author Yan Huang, Wei Xie
      */
     public void build() throws Exception {
         createInputWires();

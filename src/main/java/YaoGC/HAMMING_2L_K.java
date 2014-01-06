@@ -8,6 +8,7 @@ public class HAMMING_2L_K extends CompositeCircuit {
 
     public HAMMING_2L_K(int l, int k) {
         // The COUNTER has k bits output including the carry-out of the adder.
+        // we set inDegree == 2*l
         super(2 * l, k, l + 1, "Hamming_" + (2 * l) + "_" + k);
 
         COUNTER = l;
@@ -15,8 +16,7 @@ public class HAMMING_2L_K extends CompositeCircuit {
 
     // Construct the actual circuit
     protected void createSubCircuits() throws Exception {
-        // in the case of two l-bit inputs, inDegree == 2*l
-        //?? l copies of XOR to parallelize circuit in future??
+        // firstly pair-wise XOR, then COUNTER sub-circuit
         for (int i = 0; i < inDegree / 2; i++)
             subCircuits[i] = new XOR_2_1();
         subCircuits[COUNTER] = new COUNTER_L_K(inDegree / 2, outDegree);

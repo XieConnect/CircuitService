@@ -29,6 +29,7 @@ public class COUNTER_L_K extends CompositeCircuit {
         System.arraycopy(subCircuits[0].outputWires, 0, outputWires, 0, outDegree);
     }
 
+    // disable redundant inputs wires for COUNTER_2toK_K
     protected void fixInternalWires() {
         for (int i = inDegree; i < subCircuits[0].inDegree; i++)
             subCircuits[0].inputWires[i].fixWire(0);

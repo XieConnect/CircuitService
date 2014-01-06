@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 class TestHammingServer {
+    // input value to the circuit (random)
     static BigInteger bits;
     static int n;
 
@@ -35,7 +36,7 @@ class TestHammingServer {
     }
 
     /**
-     * Generate random input value (at most of bit length n)
+     * Generate random value from range [0,  2^n - 1]
      */
     private static void generateData() throws Exception {
         bits = new BigInteger(n, rnd);

@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class HammingDistanceServer extends ProgServer {
-    // input value
+    // input value (in decimal; "server bits")
     private BigInteger sBits;
 
     private State outputState;
@@ -21,19 +21,20 @@ public class HammingDistanceServer extends ProgServer {
     private static final Random rnd = new Random();
 
     /**
-     * @param bv input value (in decimal)
-     * @param length max bit length of input value
+     * @param bv input value to circuit (in decimal representation)
+     * @param length max bit length of allowed input values
      */
     public HammingDistanceServer(BigInteger bv, int length) {
         sBits = bv;
         HammingDistanceCommon.bitVecLen = length;
     }
 
+    // initialize circuit (automatically prior to run())
     protected void init() throws Exception {
         HammingDistanceCommon.oos.writeInt(HammingDistanceCommon.bitVecLen);
         HammingDistanceCommon.oos.flush();
 
-        // create Hamming circuit
+        // create Hamming circuit (high-level entry)
         HammingDistanceCommon.initCircuits();
 
         generateLabelPairs();
@@ -58,8 +59,10 @@ public class HammingDistanceServer extends ProgServer {
         }
     }
 
+    // Send input to opponent
     protected void execTransfer() throws Exception {
         for (int i = 0; i < HammingDistanceCommon.bitVecLen; i++) {
+            // check whether current bit is set or not
             int idx = sBits.testBit(i) ? 1 : 0;
 
             int bytelength = (Wire.labelBitLength - 1) / 8 + 1;

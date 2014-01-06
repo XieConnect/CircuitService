@@ -9,6 +9,7 @@ public class COUNTER_2toK_K extends CompositeCircuit {
     }
 
     protected void createSubCircuits() throws Exception {
+        // parallelized COUNTER: from l (e.g., 2^k) inputs to one output
         int i = 0;
         for (int level = 0; level < outDegree - 1; level++) {
             int l = outDegree - level - 1;

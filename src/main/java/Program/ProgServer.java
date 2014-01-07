@@ -35,7 +35,7 @@ public abstract class ProgServer extends Program {
 
     protected void init() throws Exception {
         Program.iterCount = ProgCommon.ois.readInt();
-        System.out.println(Program.iterCount);
+        System.out.println("Iterations: " + Program.iterCount);
 
         super.init();
     }

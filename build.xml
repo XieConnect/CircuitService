@@ -27,6 +27,10 @@
         </jar>
     </target>
 
+    <target name="runln" depends="archive">
+        <exec executable="./runln"/>
+    </target>
+
     <target name="runlevenshtein" depends="archive">
         <exec executable="./runlevenshtein"/>
     </target>

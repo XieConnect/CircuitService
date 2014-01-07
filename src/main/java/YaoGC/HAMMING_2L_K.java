@@ -7,8 +7,7 @@ public class HAMMING_2L_K extends CompositeCircuit {
     private final int COUNTER;
 
     public HAMMING_2L_K(int l, int k) {
-        // The COUNTER has k bits output including the carry-out of the adder.
-        // we set inDegree == 2*l
+        // circuit with 2*l input wires, k output wires, and l+1 sub-circuits
         super(2 * l, k, l + 1, "Hamming_" + (2 * l) + "_" + k);
 
         COUNTER = l;

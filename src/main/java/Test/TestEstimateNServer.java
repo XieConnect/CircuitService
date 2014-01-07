@@ -40,7 +40,8 @@ class TestEstimateNServer {
      * Generate random value from range [0,  2^n - 1]
      */
     private static void generateData() throws Exception {
-        bits = new BigInteger(n - 1, rnd);
+        //bits = new BigInteger(n - 1, rnd);
+        bits = new BigInteger("4");
     }
 
     public static void main(String[] args) throws Exception {

@@ -1,10 +1,7 @@
 package Program;
 
 import Utils.StopWatch;
-import YaoGC.Circuit;
-import YaoGC.EstimateN;
-import YaoGC.HAMMING_2L_K;
-import YaoGC.State;
+import YaoGC.*;
 
 import java.math.BigInteger;
 
@@ -16,7 +13,7 @@ class EstimateNCommon extends ProgCommon {
     // Initialize the Hamming circuit
     protected static void initCircuits() {
         ccs = new Circuit[1];
-        ccs[0] = new EstimateN(bitVecLen, bitVecLen);
+        ccs[0] = new EstimateNSubstep(bitVecLen);
     }
 
     public static State execCircuit(BigInteger[] slbs, BigInteger[] clbs) throws Exception {

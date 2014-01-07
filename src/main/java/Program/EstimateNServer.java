@@ -24,6 +24,7 @@ public class EstimateNServer extends ProgServer {
      * @param length max bit length of allowed input values
      */
     public EstimateNServer(BigInteger bv, int length) {
+        System.out.println("[DEBUG] Serv input: " + bv);
         sBits = bv;
         EstimateNCommon.bitVecLen = length;
     }

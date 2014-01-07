@@ -39,7 +39,8 @@ class TestEstimateNClient {
     }
 
     private static void generateData() throws Exception {
-        bits = new BigInteger(n - 1, rnd);
+        //bits = new BigInteger(n - 1, rnd);
+        bits = new BigInteger("7");
     }
 
     public static void main(String[] args) throws Exception {

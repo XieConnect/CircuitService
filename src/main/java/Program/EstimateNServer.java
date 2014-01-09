@@ -23,7 +23,7 @@ public class EstimateNServer extends ProgServer {
      * @param bv input value to circuit (in decimal representation)
      * @param length max bit length of allowed input values
      */
-    public EstimateNServer(BigInteger bv, int length) {
+    public EstimateNServer(BigInteger bv, int length, int maxN) {
         System.out.println("[DEBUG] Serv input: " + bv);
         sBits = bv;
         EstimateNCommon.bitVecLen = length;

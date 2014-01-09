@@ -11,7 +11,7 @@ import java.util.Random;
 
 class TestEstimateNClient {
     static BigInteger bits;
-    static int n;
+    static int nBits;
 
     static Random rnd = new Random();
 
@@ -33,14 +33,14 @@ class TestEstimateNClient {
             System.exit(2);
         }
 
-        n = ((Integer) parser.getOptionValue(optionBitLength, new Integer(100))).intValue();
+        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(128))).intValue();
         ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));
         Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(3))).intValue();
     }
 
     private static void generateData() throws Exception {
         //bits = new BigInteger(4, rnd).add(BigInteger.ONE);
-        bits = new BigInteger("10");
+        bits = new BigInteger("1");
     }
 
     public static void main(String[] args) throws Exception {
@@ -49,7 +49,7 @@ class TestEstimateNClient {
 
         generateData();
 
-        EstimateNClient hammingclient = new EstimateNClient(bits, n);
+        EstimateNClient hammingclient = new EstimateNClient(bits, nBits);
         hammingclient.run();
     }
 }

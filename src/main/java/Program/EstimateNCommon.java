@@ -8,6 +8,8 @@ import java.math.BigInteger;
 class EstimateNCommon extends ProgCommon {
     // max bit length of allowed input values
     static int bitVecLen;
+    //TODO optimize as necessary
+    static int defaultNBits = 128;
 
     //NOTE updated
     // Initialize the Hamming circuit

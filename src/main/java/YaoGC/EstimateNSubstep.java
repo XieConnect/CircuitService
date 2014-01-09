@@ -8,8 +8,10 @@ package YaoGC;
 public class EstimateNSubstep extends CompositeCircuit {
     private int bitLength;
     private static int subcircuitTypes = 3;
+    //TODO read from config: max N as in 2^n
+    private static int maxN = 80;
 
-    public EstimateNSubstep(int l, int k, int maxN) {
+    public EstimateNSubstep(int l, int k) {
         // Two input shares, one output, and one sub-circuit in total
         super(2 * l, k, subcircuitTypes * maxN, "EstimateNSubstep_" + (2 * l) + "_" + (k) );
         bitLength = l;

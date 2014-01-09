@@ -12,8 +12,8 @@ import java.util.Random;
 
 class TestEstimateNServer {
     // input value to the circuit (random)
-    static BigInteger bits;
-    static int n;
+    static BigInteger inputValue;
+    static int nBits;
 
     static Random rnd = new Random();
 
@@ -33,15 +33,15 @@ class TestEstimateNServer {
             System.exit(2);
         }
 
-        n = ((Integer) parser.getOptionValue(optionBitLength, new Integer(100))).intValue();
+        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(128))).intValue();
     }
 
     /**
      * Generate random value from range [0,  2^n - 1]
      */
     private static void generateData() throws Exception {
-        //bits = new BigInteger(4, rnd).add(BigInteger.ONE);
-        bits = new BigInteger("9");
+        //inputValue = new BigInteger(nBits - 2, rnd).add(BigInteger.ONE);
+        inputValue = new BigInteger("38834241553");
     }
 
     public static void main(String[] args) throws Exception {
@@ -51,7 +51,8 @@ class TestEstimateNServer {
 
         generateData();
 
-        EstimateNServer hammingserver = new EstimateNServer(bits, n);
+        int maxN = 128;
+        EstimateNServer hammingserver = new EstimateNServer(inputValue, nBits, maxN);
         hammingserver.run();
     }
 }

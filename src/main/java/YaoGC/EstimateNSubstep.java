@@ -7,7 +7,7 @@ package YaoGC;
 
 public class EstimateNSubstep extends CompositeCircuit {
     private int bitLength;
-    private int GT_INDEX = 1, ADD_INDEX = 0, MUX_INDEX = 2;
+    private int GT_INDEX = 0, ADD_INDEX = 1, MUX_INDEX = 2;
 
     public EstimateNSubstep(int l, int k) {
         // Two input shares, one output, and one sub-circuit in total
@@ -39,8 +39,8 @@ public class EstimateNSubstep extends CompositeCircuit {
             inputWires[rightIn(i)].connectTo(subCircuits[ADD_INDEX].inputWires, rightIn(i));
 
             // MUX: if 0, then left value, else right value
-            subCircuits[ADD_INDEX].outputWires[i].connectTo(subCircuits[MUX_INDEX].inputWires, MUX_2Lplus1_L.Y(i));
-            inputWires[rightIn(i)].connectTo(subCircuits[MUX_INDEX].inputWires, MUX_2Lplus1_L.X(i));
+            subCircuits[ADD_INDEX].outputWires[i].connectTo(subCircuits[MUX_INDEX].inputWires, MUX_2Lplus1_L.X(i));
+            inputWires[rightIn(i)].connectTo(subCircuits[MUX_INDEX].inputWires, MUX_2Lplus1_L.Y(i));
         }
 
         // use the Greater-Than result as decision making for MUX (last bit)

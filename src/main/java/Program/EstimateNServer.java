@@ -114,6 +114,7 @@ public class EstimateNServer extends ProgServer {
                         outLabels[i] + " != (" +
                         outputState.wires[i].lbl + ", " +
                         outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) + ")");
+
         }
 
         System.out.println("# OUTPUT (pp):     " + output);
@@ -125,6 +126,6 @@ public class EstimateNServer extends ProgServer {
         BigInteger cBits = (BigInteger) EstimateNCommon.ois.readObject();
 
         System.out.println("# INPUTS (DEBUG): [Server]: " + sBits +
-                "\n ;  [Client]: " + cBits + "\n");
+                         "\n                  [Client]: " + cBits + "\n");
     }
 }

@@ -13,7 +13,7 @@ class EstimateNCommon extends ProgCommon {
     // Initialize the Hamming circuit
     protected static void initCircuits() {
         ccs = new Circuit[1];
-        ccs[0] = new EstimateNSubstep(bitVecLen);
+        ccs[0] = new EstimateN(bitVecLen, bitVecLen);
     }
 
     public static State execCircuit(BigInteger[] slbs, BigInteger[] clbs) throws Exception {

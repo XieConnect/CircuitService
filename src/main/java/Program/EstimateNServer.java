@@ -124,9 +124,7 @@ public class EstimateNServer extends ProgServer {
     protected void verify_result() throws Exception {
         BigInteger cBits = (BigInteger) EstimateNCommon.ois.readObject();
 
-        BigInteger res = sBits.add(cBits);
-
-        System.out.println("# OUTPUT (verify): " +
-                res + "\n");
+        System.out.println("# INPUTS (DEBUG): [Server]: " + sBits +
+                "\n ;  [Client]: " + cBits + "\n");
     }
 }

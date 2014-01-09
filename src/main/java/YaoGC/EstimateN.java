@@ -8,21 +8,15 @@ package YaoGC;
 public class EstimateN extends CompositeCircuit {
     private int bitLength;
 
-    public EstimateN(int l) {
+    public EstimateN(int l, int k) {
         // Two input shares, one output, and one sub-circuit in total
-        super(2 * l, l, 1, "EstimateN_" + (2 * l) + "_" + l);
+        super(2 * l, k, 1, "EstimateN_" + (2 * l) + "_" + k);
         bitLength = l;
     }
 
     // Construct the actual circuit
     protected void createSubCircuits() throws Exception {
-        subCircuits[0] = new EstimateNSubstep(bitLength);
-
-/*
-        for (int i = 0; i < nSubCircuits; i++) {
-            subCircuits[i] = new EstimateNSubstep(inDegree / 2, outDegree);
-        }
-        */
+        subCircuits[0] = new EstimateNSubstep(bitLength, bitLength);
 
         super.createSubCircuits();
     }
@@ -39,7 +33,7 @@ public class EstimateN extends CompositeCircuit {
     }
 
     protected void defineOutputWires() {
-        System.arraycopy(subCircuits[0].outputWires, 0, outputWires, 0, bitLength);
+        System.arraycopy(subCircuits[0].outputWires, bitLength, outputWires, 0, bitLength);
     }
 
     private int leftIn(int i) {

@@ -3,6 +3,7 @@
 package Program;
 
 public abstract class Program {
+    // how many repeated experiments to run
     public static int iterCount;
 
     public void run() throws Exception {

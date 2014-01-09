@@ -35,12 +35,12 @@ class TestEstimateNClient {
 
         n = ((Integer) parser.getOptionValue(optionBitLength, new Integer(100))).intValue();
         ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));
-        Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(10))).intValue();
+        Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(3))).intValue();
     }
 
     private static void generateData() throws Exception {
-        //bits = new BigInteger(n - 1, rnd);
-        bits = new BigInteger("7");
+        bits = new BigInteger(4, rnd).add(BigInteger.ONE);
+        //bits = new BigInteger("7");
     }
 
     public static void main(String[] args) throws Exception {

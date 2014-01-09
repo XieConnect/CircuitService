@@ -7,19 +7,33 @@ package YaoGC;
 
 public class EstimateNSubstep extends CompositeCircuit {
     private int bitLength;
-    private int GT_INDEX = 0, ADD_INDEX = 1, MUX_INDEX = 2;
+    private static int subcircuitTypes = 3;
 
-    public EstimateNSubstep(int l, int k) {
+    public EstimateNSubstep(int l, int k, int maxN) {
         // Two input shares, one output, and one sub-circuit in total
-        super(2 * l, 2 * k, 3, "EstimateNSubstep_" + (2 * l) + "_" + (2 * k) );
+        super(2 * l, k, subcircuitTypes * maxN, "EstimateNSubstep_" + (2 * l) + "_" + (k) );
         bitLength = l;
+    }
+
+    private int GT_INDEX(int i) {
+        return subcircuitTypes * i;
+    }
+
+    private int ADD_INDEX(int i) {
+        return 1 + subcircuitTypes * i;
+    }
+
+    private int MUX_INDEX(int i) {
+        return 2 + subcircuitTypes * i;
     }
 
     // Construct the actual circuit
     protected void createSubCircuits() throws Exception {
-        subCircuits[GT_INDEX] = new GT_2L_1(bitLength);
-        subCircuits[ADD_INDEX] = new ADD_2L_L(bitLength);
-        subCircuits[MUX_INDEX] = new MUX_2Lplus1_L(bitLength);
+        for (int i = 0; i < subCircuits.length / subcircuitTypes; i++) {
+            subCircuits[GT_INDEX(i)] = new GT_2L_1(bitLength);
+            subCircuits[ADD_INDEX(i)] = new ADD_2L_L(bitLength);
+            subCircuits[MUX_INDEX(i)] = new MUX_2Lplus1_L(bitLength);
+        }
 
         super.createSubCircuits();
     }
@@ -29,28 +43,56 @@ public class EstimateNSubstep extends CompositeCircuit {
      * Inputs in order: (x, est)
      */
     protected void connectWires() throws Exception {
+        //-- connect first set of subcircuits --
         for (int i = 0; i < bitLength; i++) {
             // Greater-Than: x > est ? 1 : 0
-            inputWires[leftIn(i)].connectTo(subCircuits[GT_INDEX].inputWires, leftIn(i));
-            inputWires[rightIn(i)].connectTo(subCircuits[GT_INDEX].inputWires, rightIn(i));
+            inputWires[leftIn(i)].connectTo( subCircuits[GT_INDEX(0)].inputWires, GT_2L_1.X(i) );
+            inputWires[rightIn(i)].connectTo( subCircuits[GT_INDEX(0)].inputWires, GT_2L_1.Y(i) );
 
             // ADD: has two (same) inputs (est)
-            inputWires[rightIn(i)].connectTo(subCircuits[ADD_INDEX].inputWires, leftIn(i));
-            inputWires[rightIn(i)].connectTo(subCircuits[ADD_INDEX].inputWires, rightIn(i));
+            inputWires[rightIn(i)].connectTo( subCircuits[ADD_INDEX(0)].inputWires, leftIn(i) );
+            inputWires[rightIn(i)].connectTo( subCircuits[ADD_INDEX(0)].inputWires, rightIn(i) );
 
             // MUX: if 0, then left value, else right value
-            subCircuits[ADD_INDEX].outputWires[i].connectTo(subCircuits[MUX_INDEX].inputWires, MUX_2Lplus1_L.X(i));
-            inputWires[rightIn(i)].connectTo(subCircuits[MUX_INDEX].inputWires, MUX_2Lplus1_L.Y(i));
+            subCircuits[ADD_INDEX(0)].outputWires[i].connectTo(
+                    subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.Y(i));
+            inputWires[rightIn(i)].connectTo( subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.X(i) );
         }
 
         // use the Greater-Than result as decision making for MUX (last bit)
-        subCircuits[GT_INDEX].outputWires[0].connectTo(subCircuits[MUX_INDEX].inputWires, inDegree);
+        subCircuits[GT_INDEX(0)].outputWires[0].connectTo(subCircuits[MUX_INDEX(0)].inputWires, inDegree);
+
+        //-- now handle other sets of circuits --
+        for (int circuitIndex = 1; circuitIndex < subCircuits.length / subcircuitTypes; circuitIndex++) {
+            for (int i = 0; i < bitLength; i++) {
+                // Greater-Than: x > est ? 1 : 0
+                inputWires[leftIn(i)].connectTo(subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.X(i));
+                subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
+                        subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.Y(i));
+
+                // ADD: has two (same) inputs (est)
+                subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
+                        subCircuits[ADD_INDEX(circuitIndex)].inputWires, leftIn(i));
+                subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
+                        subCircuits[ADD_INDEX(circuitIndex)].inputWires, rightIn(i));
+
+                // MUX: if 0, then left value, else right value
+                subCircuits[ADD_INDEX(circuitIndex)].outputWires[i].connectTo(
+                        subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.Y(i));
+                subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
+                        subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.X(i));
+            }
+
+            subCircuits[GT_INDEX(circuitIndex)].outputWires[0].connectTo(
+                    subCircuits[MUX_INDEX(circuitIndex)].inputWires, inDegree);
+        }
     }
 
     // Output with two parts: (x, new_estimate)
     protected void defineOutputWires() {
-        System.arraycopy(inputWires, 0, outputWires, 0, bitLength);
-        System.arraycopy(subCircuits[MUX_INDEX].outputWires, 0,  outputWires, bitLength, bitLength);
+        //System.arraycopy(inputWires, 0, outputWires, 0, bitLength);
+        System.arraycopy(subCircuits[MUX_INDEX(subCircuits.length / subcircuitTypes - 1)].outputWires, 0,
+                outputWires, 0, bitLength);
     }
 
     private int leftIn(int i) {

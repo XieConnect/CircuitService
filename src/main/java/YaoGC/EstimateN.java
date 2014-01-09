@@ -17,7 +17,7 @@ public class EstimateN extends CompositeCircuit {
 
     // Construct the actual circuit
     protected void createSubCircuits() throws Exception {
-        subCircuits[0] = new EstimateNSubstep(bitLength, bitLength);
+        subCircuits[0] = new EstimateNSubstep(bitLength, bitLength, 2);
 
         super.createSubCircuits();
     }
@@ -34,7 +34,7 @@ public class EstimateN extends CompositeCircuit {
     }
 
     protected void defineOutputWires() {
-        System.arraycopy(subCircuits[0].outputWires, bitLength, outputWires, 0, bitLength);
+        System.arraycopy(subCircuits[0].outputWires, 0, outputWires, 0, bitLength);
     }
 
     private int leftIn(int i) {

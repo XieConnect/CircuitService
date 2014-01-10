@@ -114,7 +114,6 @@ public class EstimateNServer extends ProgServer {
                         outLabels[i] + " != (" +
                         outputState.wires[i].lbl + ", " +
                         outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) + ")");
-
         }
 
         System.out.println("# OUTPUT (pp):     " + output);

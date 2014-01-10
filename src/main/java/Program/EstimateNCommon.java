@@ -16,6 +16,9 @@ class EstimateNCommon extends ProgCommon {
     protected static void initCircuits() {
         ccs = new Circuit[1];
         ccs[0] = new EstimateN(bitVecLen, bitVecLen);
+
+        //DEBUG
+        //ccs[0] = new SampleCircuit(bitVecLen, bitVecLen);
     }
 
     public static State execCircuit(BigInteger[] slbs, BigInteger[] clbs) throws Exception {

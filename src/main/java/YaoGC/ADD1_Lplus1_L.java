@@ -2,6 +2,7 @@
 
 package YaoGC;
 
+// Add 1-bit and L-bit values (listed in order)
 class ADD1_Lplus1_L extends CompositeCircuit {
     private final int L;
 

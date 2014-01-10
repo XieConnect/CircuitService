@@ -5,10 +5,10 @@
 
 package YaoGC;
 
-public class EstimateN extends CompositeCircuit {
+public class ScaleEpsilon extends CompositeCircuit {
     private int bitLength;
 
-    public EstimateN(int l, int k) {
+    public ScaleEpsilon(int l, int k) {
         // Two input shares, one output, and one sub-circuit in total
         super(2 * l, k, 2, "EstimateN_" + (2 * l) + "_" + k);
 

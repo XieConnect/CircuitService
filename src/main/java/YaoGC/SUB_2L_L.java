@@ -1,8 +1,8 @@
 package YaoGC;
 
 /*
- * Subtraction (X - Y): Fig. 3 of [KSS09] (similar to the ADD_2L_L)
- * For inputs <X, Y>, first do two-complement on Y, then ADD, then ADD1
+ * Subtraction: Fig. 3 of [KSS09] (similar to the ADD_2L_L)
+ * For inputs <X, Y>, it will compute Y - X  via two-complement and addition
  */
 public class SUB_2L_L extends CompositeCircuit {
     private final int L;

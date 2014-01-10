@@ -1,6 +1,7 @@
 /**
  * @author Wei Xie
  * @description Sub-circuit inside the loop of estimating n in 2^n (to approximate value x)
+ * Output (in order): (est, n)
  */
 
 package YaoGC;
@@ -15,7 +16,7 @@ public class EstimateNSubstep extends CompositeCircuit {
 
     public EstimateNSubstep(int l, int k) {
         // Two input shares, one output, and one sub-circuit in total
-        super(2 * l, 2 * k, 1 + subcircuitTypes * maxN, "EstimateNSubstep_" + (2 * l) + "_" + (k) );
+        super(2 * l, 2 * k, 1 + subcircuitTypes * maxN, "EstimateNSubstep_" + (2 * l) + "_" + (2 * k) );
         bitLength = l;
     }
 
@@ -78,15 +79,18 @@ public class EstimateNSubstep extends CompositeCircuit {
         }
 
         // use the Greater-Than result as decision making for MUX
-        subCircuits[GT_INDEX(0)].outputWires[0].connectTo(subCircuits[MUX_INDEX(0)].inputWires, inDegree);
-        subCircuits[GT_INDEX(0)].outputWires[0].connectTo(subCircuits[MUX_N_INDEX(0)].inputWires, inDegree);
+        subCircuits[GT_INDEX(0)].outputWires[0].connectTo(
+                subCircuits[MUX_INDEX(0)].inputWires, inDegree);
+        subCircuits[GT_INDEX(0)].outputWires[0].connectTo(
+                subCircuits[MUX_N_INDEX(0)].inputWires, inDegree);
 
 
         //-- handle other sets of circuits --
-        for (int circuitIndex = 1; circuitIndex < subCircuits.length / subcircuitTypes; circuitIndex++) {
+        for (int circuitIndex = 1; circuitIndex < maxN; circuitIndex++) {
             for (int i = 0; i < bitLength; i++) {
                 // Greater-Than: x > est ? 1 : 0
-                subCircuits[X_INDEX].outputWires[i].connectTo(subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.X(i));
+                subCircuits[X_INDEX].outputWires[i].connectTo(
+                        subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.X(i));
                 subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
                         subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.Y(i));
 

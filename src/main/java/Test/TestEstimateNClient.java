@@ -33,9 +33,9 @@ class TestEstimateNClient {
             System.exit(2);
         }
 
-        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(128))).intValue();
+        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(64))).intValue();
         ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));
-        Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(3))).intValue();
+        Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(10))).intValue();
     }
 
     private static void generateData() throws Exception {

@@ -33,7 +33,7 @@ class TestEstimateNServer {
             System.exit(2);
         }
 
-        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(128))).intValue();
+        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(64))).intValue();
     }
 
     /**

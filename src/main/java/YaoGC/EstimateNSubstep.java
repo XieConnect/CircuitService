@@ -7,7 +7,7 @@ package YaoGC;
 
 public class EstimateNSubstep extends CompositeCircuit {
     private int bitLength;
-    private static int subcircuitTypes = 3;
+    private static int subcircuitTypes = 2;
     //TODO read from config: max N as in 2^n
     private static int maxN = 80;
 
@@ -21,19 +21,14 @@ public class EstimateNSubstep extends CompositeCircuit {
         return subcircuitTypes * i;
     }
 
-    private int ADD_INDEX(int i) {
-        return 1 + subcircuitTypes * i;
-    }
-
     private int MUX_INDEX(int i) {
-        return 2 + subcircuitTypes * i;
+        return 1 + subcircuitTypes * i;
     }
 
     // Construct the actual circuit
     protected void createSubCircuits() throws Exception {
         for (int i = 0; i < subCircuits.length / subcircuitTypes; i++) {
             subCircuits[GT_INDEX(i)] = new GT_2L_1(bitLength);
-            subCircuits[ADD_INDEX(i)] = new ADD_2L_L(bitLength);
             subCircuits[MUX_INDEX(i)] = new MUX_2Lplus1_L(bitLength);
         }
 
@@ -51,13 +46,9 @@ public class EstimateNSubstep extends CompositeCircuit {
             inputWires[leftIn(i)].connectTo( subCircuits[GT_INDEX(0)].inputWires, GT_2L_1.X(i) );
             inputWires[rightIn(i)].connectTo( subCircuits[GT_INDEX(0)].inputWires, GT_2L_1.Y(i) );
 
-            // ADD: has two (same) inputs (est)
-            inputWires[rightIn(i)].connectTo( subCircuits[ADD_INDEX(0)].inputWires, leftIn(i) );
-            inputWires[rightIn(i)].connectTo( subCircuits[ADD_INDEX(0)].inputWires, rightIn(i) );
-
             // MUX: if 0, then left value, else right value
-            subCircuits[ADD_INDEX(0)].outputWires[i].connectTo(
-                    subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.Y(i));
+            inputWires[rightIn(i)].connectTo(
+                    subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.Y( (i + 1 + bitLength) % bitLength ));
             inputWires[rightIn(i)].connectTo( subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.X(i) );
         }
 
@@ -72,15 +63,9 @@ public class EstimateNSubstep extends CompositeCircuit {
                 subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
                         subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.Y(i));
 
-                // ADD: has two (same) inputs (est)
-                subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
-                        subCircuits[ADD_INDEX(circuitIndex)].inputWires, leftIn(i));
-                subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
-                        subCircuits[ADD_INDEX(circuitIndex)].inputWires, rightIn(i));
-
                 // MUX: if 0, then left value, else right value
-                subCircuits[ADD_INDEX(circuitIndex)].outputWires[i].connectTo(
-                        subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.Y(i));
+                subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
+                        subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.Y( (i + 1 + bitLength) % bitLength ));
                 subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
                         subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.X(i));
             }

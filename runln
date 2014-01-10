@@ -1,7 +1,7 @@
 #!/bin/bash
 
-java -cp dist/FasterGC.jar:extlibs/jargs.jar:extlibs/commons-io-1.4.jar Test.TestEstimateNServer -n 900 1>results/lnserverout 2>results/lnservererr &
+java -cp dist/FasterGC.jar:extlibs/jargs.jar:extlibs/commons-io-1.4.jar Test.TestEstimateNServer -n 64 1>results/lnserverout 2>results/lnservererr &
 
 sleep 0.8
 
-java -cp dist/FasterGC.jar:extlibs/commons-io-1.4.jar:extlibs/jargs.jar Test.TestEstimateNClient --server localhost  -n 900 1>results/lnclientout 2>results/lnclienterr & 
+java -cp dist/FasterGC.jar:extlibs/commons-io-1.4.jar:extlibs/jargs.jar Test.TestEstimateNClient --server localhost  -n 64 1>results/lnclientout 2>results/lnclienterr & 

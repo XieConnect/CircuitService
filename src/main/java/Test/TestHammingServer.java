@@ -32,7 +32,7 @@ class TestHammingServer {
             System.exit(2);
         }
 
-        n = ((Integer) parser.getOptionValue(optionBitLength, new Integer(100))).intValue();
+        n = ((Integer) parser.getOptionValue(optionBitLength, new Integer(900))).intValue();
     }
 
     /**

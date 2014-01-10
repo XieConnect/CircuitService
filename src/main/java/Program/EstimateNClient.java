@@ -14,6 +14,7 @@ public class EstimateNClient extends ProgClient {
     private State outputState;
 
     public EstimateNClient(BigInteger bv, int length) {
+        //DEBUG
         System.out.println("[DEBUG] Client input: " + bv);
 
         cBits = bv;

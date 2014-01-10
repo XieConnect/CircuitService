@@ -18,6 +18,7 @@ public class EstimateN extends CompositeCircuit {
     // Construct the actual circuit
     protected void createSubCircuits() throws Exception {
         subCircuits[0] = new EstimateNSubstep(bitLength, bitLength);
+        //subCircuits[1] = new SUB_2L_L(bitLength);
 
         super.createSubCircuits();
     }

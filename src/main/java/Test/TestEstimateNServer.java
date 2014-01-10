@@ -37,12 +37,12 @@ class TestEstimateNServer {
     }
 
     /**
-     * Generate random value from range [0,  2^n - 1]
+     * Generate input value
      */
     private static void generateData() throws Exception {
         //inputValue = new BigInteger(nBits - 2, rnd).add(BigInteger.ONE);
         //inputValue = new BigInteger("38834241553");
-        inputValue = new BigInteger("6");
+        inputValue = new BigInteger("1");
     }
 
     public static void main(String[] args) throws Exception {

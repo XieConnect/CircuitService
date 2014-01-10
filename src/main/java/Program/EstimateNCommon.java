@@ -8,17 +8,14 @@ import java.math.BigInteger;
 class EstimateNCommon extends ProgCommon {
     // max bit length of allowed input values
     static int bitVecLen;
-    //TODO optimize as necessary
-    static int defaultNBits = 128;
 
-    //NOTE updated
     // Initialize the Hamming circuit
     protected static void initCircuits() {
         ccs = new Circuit[1];
         ccs[0] = new EstimateN(bitVecLen, bitVecLen);
 
         //DEBUG
-        //ccs[0] = new SampleCircuit(bitVecLen, bitVecLen);
+        //ccs[0] = new SUB_2L_L(bitVecLen);
     }
 
     public static State execCircuit(BigInteger[] slbs, BigInteger[] clbs) throws Exception {

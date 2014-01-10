@@ -15,7 +15,7 @@ public class EstimateNSubstep extends CompositeCircuit {
 
     public EstimateNSubstep(int l, int k) {
         // Two input shares, one output, and one sub-circuit in total
-        super(2 * l, k, 1 + subcircuitTypes * maxN, "EstimateNSubstep_" + (2 * l) + "_" + (k) );
+        super(2 * l, 2 * k, 1 + subcircuitTypes * maxN, "EstimateNSubstep_" + (2 * l) + "_" + (k) );
         bitLength = l;
     }
 
@@ -117,8 +117,10 @@ public class EstimateNSubstep extends CompositeCircuit {
 
     // circuit output
     protected void defineOutputWires() {
-        System.arraycopy(subCircuits[MUX_N_INDEX(maxN - 1)].outputWires, 0,
+        System.arraycopy(subCircuits[MUX_INDEX(maxN - 1)].outputWires, 0,
                 outputWires, 0, bitLength);
+        System.arraycopy(subCircuits[MUX_N_INDEX(maxN - 1)].outputWires, 0,
+                outputWires, bitLength, bitLength);
     }
 
     private int leftIn(int i) {

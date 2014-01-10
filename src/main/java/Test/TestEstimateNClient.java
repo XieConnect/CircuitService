@@ -40,7 +40,7 @@ class TestEstimateNClient {
 
     private static void generateData() throws Exception {
         //bits = new BigInteger(4, rnd).add(BigInteger.ONE);
-        bits = new BigInteger("1");
+        bits = new BigInteger("5");
     }
 
     public static void main(String[] args) throws Exception {

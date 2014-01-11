@@ -3,6 +3,7 @@
  */
 package Test;
 
+import Program.EstimateNConfig;
 import Program.EstimateNServer;
 import Utils.StopWatch;
 import jargs.gnu.CmdLineParser;
@@ -52,8 +53,8 @@ class TestEstimateNServer {
 
         generateData();
 
-        int maxN = 128;
-        EstimateNServer hammingserver = new EstimateNServer(inputValue, nBits, maxN);
+        // args: input value,  max bit size of value,  number of loops
+        EstimateNServer hammingserver = new EstimateNServer(inputValue, EstimateNConfig.nBits, EstimateNConfig.maxN);
         hammingserver.run();
     }
 }

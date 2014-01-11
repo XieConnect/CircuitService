@@ -13,10 +13,12 @@ public class EstimateNSubstep extends CompositeCircuit {
     private static int maxN = 80;
     // index of ADD sub-circuit for obtaining X
     private int X_INDEX = 0;
+    // index of last subtraction sub-circuit
+    private int SUB_INDEX = subCircuits.length - 1;
 
     public EstimateNSubstep(int l, int k) {
         // Two input shares, one output, and one sub-circuit in total
-        super(2 * l, 2 * k, 1 + subcircuitTypes * maxN, "EstimateNSubstep_" + (2 * l) + "_" + (2 * k) );
+        super(2 * l, 2 * k, 1 + subcircuitTypes * maxN + 1, "EstimateNSubstep_" + (2 * l) + "_" + (2 * k) );
         bitLength = l;
     }
 
@@ -53,6 +55,8 @@ public class EstimateNSubstep extends CompositeCircuit {
             subCircuits[ADD1_N_INDEX(i)] = new ADD1_Lplus1_L(bitLength);
             subCircuits[MUX_N_INDEX(i)] = new MUX_2Lplus1_L(bitLength);
         }
+
+        subCircuits[SUB_INDEX] = new SUB_2L_L(bitLength);
 
         super.createSubCircuits();
     }
@@ -117,11 +121,19 @@ public class EstimateNSubstep extends CompositeCircuit {
             subCircuits[GT_INDEX(circuitIndex)].outputWires[0].connectTo(
                     subCircuits[MUX_N_INDEX(circuitIndex)].inputWires, inDegree);
         }
+
+        //-- Subtraction to compute est = x - est
+        for (int i = 0; i < bitLength; i++) {
+            subCircuits[MUX_INDEX(maxN - 1)].outputWires[i].connectTo(
+                    subCircuits[SUB_INDEX].inputWires, leftIn(i) );
+            subCircuits[X_INDEX].outputWires[i].connectTo(
+                    subCircuits[SUB_INDEX].inputWires, rightIn(i) );
+        }
     }
 
-    // circuit output
+    // circuit output: epsilon, and the n; e.g.: (est, n)
     protected void defineOutputWires() {
-        System.arraycopy(subCircuits[MUX_INDEX(maxN - 1)].outputWires, 0,
+        System.arraycopy(subCircuits[SUB_INDEX].outputWires, 0,
                 outputWires, 0, bitLength);
         System.arraycopy(subCircuits[MUX_N_INDEX(maxN - 1)].outputWires, 0,
                 outputWires, bitLength, bitLength);

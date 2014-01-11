@@ -1,5 +1,6 @@
 package Test;
 
+import Program.EstimateNConfig;
 import Program.EstimateNClient;
 import Program.ProgClient;
 import Program.Program;
@@ -10,7 +11,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 class TestEstimateNClient {
-    static BigInteger bits;
+    static BigInteger inputValue;
     static int nBits;
 
     static Random rnd = new Random();
@@ -39,8 +40,8 @@ class TestEstimateNClient {
     }
 
     private static void generateData() throws Exception {
-        //bits = new BigInteger(4, rnd).add(BigInteger.ONE);
-        bits = new BigInteger("5");
+        //inputValue = new BigInteger(4, rnd).add(BigInteger.ONE);
+        inputValue = new BigInteger("5");
     }
 
     public static void main(String[] args) throws Exception {
@@ -49,7 +50,7 @@ class TestEstimateNClient {
 
         generateData();
 
-        EstimateNClient hammingclient = new EstimateNClient(bits, nBits);
+        EstimateNClient hammingclient = new EstimateNClient(inputValue, EstimateNConfig.nBits);
         hammingclient.run();
     }
 }

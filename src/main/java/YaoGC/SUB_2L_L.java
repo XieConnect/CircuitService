@@ -8,7 +8,7 @@ public class SUB_2L_L extends CompositeCircuit {
     private final int L;
 
     public SUB_2L_L(int l) {
-        super(2 * l, l, 1 + l, "ADD_" + (2 * l) + "_" + (l + 1));
+        super(2 * l, l, 1 + l, "SUB_" + (2 * l) + "_" + l);
 
         L = l;
     }

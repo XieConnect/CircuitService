@@ -54,7 +54,7 @@ class TestEstimateNServer {
         generateData();
 
         // args: input value,  max bit size of value,  number of loops
-        EstimateNServer hammingserver = new EstimateNServer(inputValue, EstimateNConfig.nBits, EstimateNConfig.maxN);
-        hammingserver.run();
+        EstimateNServer server = new EstimateNServer(inputValue, EstimateNConfig.nBits, EstimateNConfig.maxN);
+        server.run();
     }
 }

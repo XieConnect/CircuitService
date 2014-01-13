@@ -50,7 +50,7 @@ class TestEstimateNClient {
 
         generateData();
 
-        EstimateNClient hammingclient = new EstimateNClient(inputValue, EstimateNConfig.nBits);
-        hammingclient.run();
+        EstimateNClient client = new EstimateNClient(inputValue, EstimateNConfig.nBits);
+        client.run();
     }
 }

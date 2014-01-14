@@ -15,8 +15,7 @@ public class ScaleEpsilon extends CompositeCircuit {
     private static int subcircuitTypes = 2;
 
     public ScaleEpsilon(int l) {
-        //super(2 * l, l, 1 + subcircuitTypes * EstimateNConfig.maxN, "ScaleEpsilon_" + (2 * l) + "_" + l);
-        super(2 * l, 1, 1 + subcircuitTypes * EstimateNConfig.maxN, "ScaleEpsilon_" + (2 * l) + "_" + l);
+        super(2 * l, l, 1 + subcircuitTypes * EstimateNConfig.maxN, "ScaleEpsilon_" + (2 * l) + "_" + l);
 
         bitLength = l;
     }
@@ -51,12 +50,12 @@ public class ScaleEpsilon extends CompositeCircuit {
 
             //-- specially for first iteration of loop
             subCircuits[0].outputWires[i].connectTo(
-                    subCircuits[GT_INDEX(0)].inputWires, leftIn(i));
+                    subCircuits[GT_INDEX(0)].inputWires, GT_2L_1.Y(i));
 
             inputWires[leftIn(i)].connectTo(
-                    subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.X(i));
+                    subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.Y(i));
             inputWires[leftIn(i)].connectTo(
-                    subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.Y((i + 1) % bitLength));
+                    subCircuits[MUX_INDEX(0)].inputWires, MUX_2Lplus1_L.X((i + 1) % bitLength));
         }
         subCircuits[GT_INDEX(0)].outputWires[0].connectTo(
                 subCircuits[MUX_INDEX(0)].inputWires, 2 * bitLength);
@@ -66,13 +65,13 @@ public class ScaleEpsilon extends CompositeCircuit {
             for (int i = 0; i < bitLength; i++) {
                 // jEnd
                 subCircuits[0].outputWires[i].connectTo(
-                        subCircuits[GT_INDEX(circuitIndex)].inputWires, leftIn(i));
+                        subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.Y(i));
 
                 // est or 2*est (actually should be epsilon)
                 subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
-                        subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.X(i));
+                        subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.Y(i));
                 subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
-                        subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.Y((i + 1) % bitLength));
+                        subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.X((i + 1) % bitLength));
             }
 
             subCircuits[GT_INDEX(circuitIndex)].outputWires[0].connectTo(
@@ -81,8 +80,8 @@ public class ScaleEpsilon extends CompositeCircuit {
     }
 
     protected void defineOutputWires() {
-        //System.arraycopy(subCircuits[0].outputWires, 0, outputWires, 0, bitLength);
-        System.arraycopy(subCircuits[GT_INDEX(0)].outputWires, 0, outputWires, 0, 1);
+        System.arraycopy(subCircuits[MUX_INDEX(EstimateNConfig.maxN - 1)].outputWires, 0,
+                outputWires, 0, bitLength);
     }
 
     private int leftIn(int i) {
@@ -102,7 +101,7 @@ public class ScaleEpsilon extends CompositeCircuit {
 
         for (int circuitIndex = 0; circuitIndex < EstimateNConfig.maxN; circuitIndex++) {
             for (int i = 0; i < bitLength; i++) {
-                subCircuits[GT_INDEX(circuitIndex)].inputWires[rightIn(i)].fixWire(
+                subCircuits[GT_INDEX(circuitIndex)].inputWires[GT_2L_1.X(i)].fixWire(
                         (BigInteger.valueOf(circuitIndex).testBit(i) ? 1 : 0) );
             }
         }

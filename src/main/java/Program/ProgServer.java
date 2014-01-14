@@ -26,11 +26,20 @@ public abstract class ProgServer extends Program {
     protected int otMsgBitLength = Wire.labelBitLength;
 
     public void run() throws Exception {
+        //create_socket_and_listen();
+
+        //super.run();
+
+        //cleanup();
+    }
+
+    public void runOffline() throws Exception {
         create_socket_and_listen();
+        init();
+    }
 
-        super.run();
-
-        cleanup();
+    public void runOnline() throws Exception {
+        super.runOnline();
     }
 
     protected void init() throws Exception {
@@ -59,7 +68,7 @@ public abstract class ProgServer extends Program {
         StopWatch.cis = cis;
     }
 
-    private void cleanup() throws Exception {
+    public void cleanup() throws Exception {
         ProgCommon.oos.close();                          // close everything
         ProgCommon.ois.close();
         clientSocket.close();

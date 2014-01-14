@@ -22,13 +22,11 @@ public class EstimateNServer extends ProgServer {
      * @param bv input value to circuit (in decimal representation)
      * @param length max bit length of allowed input values
      */
-    public EstimateNServer(BigInteger bv, int length, int maxN) {
-        System.out.println("[DEBUG] Serv input: " + bv);
-        sBits = bv;
+    public EstimateNServer(int length, int maxN) {
         EstimateNCommon.bitVecLen = length;
     }
 
-    // initialize circuit (automatically prior to run())
+    // initialize circuit (it needs to be explicitly called)
     protected void init() throws Exception {
         EstimateNCommon.oos.writeInt(EstimateNCommon.bitVecLen);
         EstimateNCommon.oos.flush();
@@ -41,16 +39,24 @@ public class EstimateNServer extends ProgServer {
         super.init();
     }
 
+    public void setInputs(BigInteger bitValue) {
+        sBits = bitValue;
+    }
+
     private void generateLabelPairs() {
         sBitslps = new BigInteger[EstimateNCommon.bitVecLen][2];
         cBitslps = new BigInteger[EstimateNCommon.bitVecLen][2];
+        BigInteger glb0, glb1;
 
         for (int i = 0; i < EstimateNCommon.bitVecLen; i++) {
-            BigInteger glb0 = new BigInteger(Wire.labelBitLength, rnd);
-            BigInteger glb1 = glb0.xor(Wire.R.shiftLeft(1).setBit(0));
+            glb0 = new BigInteger(Wire.labelBitLength, rnd);
+            glb1 = glb0.xor(Wire.R.shiftLeft(1).setBit(0));
             sBitslps[i][0] = glb0;
             sBitslps[i][1] = glb1;
+        }
 
+        // for client
+        for (int i = 0; i < EstimateNCommon.bitVecLen; i++) {
             glb0 = new BigInteger(Wire.labelBitLength, rnd);
             glb1 = glb0.xor(Wire.R.shiftLeft(1).setBit(0));
             cBitslps[i][0] = glb0;

@@ -6,22 +6,31 @@ public abstract class Program {
     // how many repeated experiments to run
     public static int iterCount;
 
+
     public void run() throws Exception {
         init();
 
-        for (int i = 0; i < iterCount; i++) {
-            execute();
-            verify_result();
-        }
+        runOnline();
     }
 
     /**
-     * Create circuits and prepare OT
+     * Create circuits and prepare OT (offline phase)
      */
     protected void init() throws Exception {
         createCircuits();
 
         initializeOT();
+    }
+
+    // Online phase
+    public void runOnline() throws Exception {
+        System.out.println("\n### Online phase starts...###");
+
+        // run experiment multiple times
+        for (int i = 0; i < iterCount; i++) {
+            execute();
+            verify_result();
+        }
     }
 
     abstract protected void createCircuits() throws Exception;

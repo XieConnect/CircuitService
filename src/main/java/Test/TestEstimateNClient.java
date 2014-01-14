@@ -36,7 +36,7 @@ class TestEstimateNClient {
 
         nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(64))).intValue();
         ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));
-        Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(10))).intValue();
+        Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(1))).intValue();
     }
 
     private static void generateData() throws Exception {
@@ -50,7 +50,14 @@ class TestEstimateNClient {
 
         generateData();
 
-        EstimateNClient client = new EstimateNClient(inputValue, EstimateNConfig.nBits);
-        client.run();
+        EstimateNClient client = new EstimateNClient(EstimateNConfig.nBits);
+
+        client.runOffline();
+
+        for (int i = 0; i < 3; i++) {
+            System.out.println("#### One more inputs:");
+            client.setInputs(inputValue.add(BigInteger.valueOf(i)));
+            client.runOnline();
+        }
     }
 }

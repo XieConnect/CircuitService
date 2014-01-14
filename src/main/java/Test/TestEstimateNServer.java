@@ -54,7 +54,16 @@ class TestEstimateNServer {
         generateData();
 
         // args: input value,  max bit size of value,  number of loops
-        EstimateNServer server = new EstimateNServer(inputValue, EstimateNConfig.nBits, EstimateNConfig.maxN);
-        server.run();
+        EstimateNServer server = new EstimateNServer(EstimateNConfig.nBits, EstimateNConfig.maxN);
+
+        server.runOffline();
+
+        for (int i = 0; i < 3; i++) {
+            System.out.println("#### One more inputs:");
+            server.setInputs(inputValue.add(BigInteger.valueOf(i)));
+            server.runOnline();
+        }
+
+        server.cleanup();
     }
 }

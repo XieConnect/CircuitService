@@ -26,6 +26,15 @@ public abstract class ProgClient extends Program {
         cleanup();
     }
 
+    public void runOffline() throws Exception {
+        create_socket_and_connect();
+        init();
+    }
+
+    public void runOnline() throws Exception {
+        super.runOnline();
+    }
+
     protected void init() throws Exception {
         System.out.println(Program.iterCount);
         ProgCommon.oos.writeInt(Program.iterCount);

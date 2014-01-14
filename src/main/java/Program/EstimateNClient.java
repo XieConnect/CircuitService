@@ -13,12 +13,12 @@ public class EstimateNClient extends ProgClient {
 
     private State outputState;
 
-    public EstimateNClient(BigInteger bv, int length) {
-        //DEBUG
-        System.out.println("[DEBUG] Client input: " + bv);
-
-        cBits = bv;
+    public EstimateNClient(int length) {
         EstimateNCommon.bitVecLen = length;
+    }
+
+    public void setInputs(BigInteger bitValue) {
+        cBits = bitValue;
     }
 
     protected void init() throws Exception {

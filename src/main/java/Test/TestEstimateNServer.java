@@ -43,7 +43,7 @@ class TestEstimateNServer {
     private static void generateData() throws Exception {
         //inputValue = new BigInteger(nBits - 2, rnd).add(BigInteger.ONE);
         //inputValue = new BigInteger("38834241553");
-        inputValue = new BigInteger("-2");
+        inputValue = new BigInteger("1");
     }
 
     public static void main(String[] args) throws Exception {

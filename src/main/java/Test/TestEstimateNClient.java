@@ -41,7 +41,7 @@ class TestEstimateNClient {
 
     private static void generateData() throws Exception {
         //inputValue = new BigInteger(4, rnd).add(BigInteger.ONE);
-        inputValue = new BigInteger("3");
+        inputValue = new BigInteger("5");
     }
 
     public static void main(String[] args) throws Exception {

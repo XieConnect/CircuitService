@@ -18,7 +18,6 @@ public class EstimateNServer extends ProgServer {
 
     private static final Random rnd = new Random();
 
-    //NOTE updated
     /**
      * @param bv input value to circuit (in decimal representation)
      * @param length max bit length of allowed input values
@@ -29,7 +28,6 @@ public class EstimateNServer extends ProgServer {
         EstimateNCommon.bitVecLen = length;
     }
 
-    //NOTE updated
     // initialize circuit (automatically prior to run())
     protected void init() throws Exception {
         EstimateNCommon.oos.writeInt(EstimateNCommon.bitVecLen);
@@ -43,7 +41,6 @@ public class EstimateNServer extends ProgServer {
         super.init();
     }
 
-    //NOTE updated
     private void generateLabelPairs() {
         sBitslps = new BigInteger[EstimateNCommon.bitVecLen][2];
         cBitslps = new BigInteger[EstimateNCommon.bitVecLen][2];
@@ -61,7 +58,6 @@ public class EstimateNServer extends ProgServer {
         }
     }
 
-    //NOTE updated
     // Send input to opponent
     protected void execTransfer() throws Exception {
         for (int i = 0; i < EstimateNCommon.bitVecLen; i++) {
@@ -79,7 +75,6 @@ public class EstimateNServer extends ProgServer {
         StopWatch.taskTimeStamp("sending labels for peers inputs");
     }
 
-    //NOTE updated
     protected void execCircuit() throws Exception {
         BigInteger[] sBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
         BigInteger[] cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
@@ -93,7 +88,6 @@ public class EstimateNServer extends ProgServer {
         outputState = EstimateNCommon.execCircuit(sBitslbs, cBitslbs);
     }
 
-    //NOTE updated
     protected void interpretResult() throws Exception {
         BigInteger[] outLabels = (BigInteger[]) EstimateNCommon.ois.readObject();
 
@@ -120,7 +114,6 @@ public class EstimateNServer extends ProgServer {
         StopWatch.taskTimeStamp("output labels received and interpreted");
     }
 
-    //NOTE updated
     protected void verify_result() throws Exception {
         BigInteger cBits = (BigInteger) EstimateNCommon.ois.readObject();
 

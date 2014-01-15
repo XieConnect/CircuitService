@@ -18,6 +18,10 @@ public class EstimateNServer extends ProgServer {
 
     private static final Random rnd = new Random();
 
+    // output results
+    int numberOutputs = 2;
+    public BigInteger[] results;
+
     /**
      * @param length max bit length of allowed input values
      */
@@ -45,7 +49,7 @@ public class EstimateNServer extends ProgServer {
 
     private void generateLabelPairs() {
         sBitslps = new BigInteger[EstimateNCommon.bitVecLen][2];
-        cBitslps = new BigInteger[EstimateNCommon.clientInputsLength][2];
+        cBitslps = new BigInteger[EstimateNCommon.bitVecLen][2];
         BigInteger glb0, glb1;
 
         for (int i = 0; i < EstimateNCommon.bitVecLen; i++) {
@@ -56,7 +60,7 @@ public class EstimateNServer extends ProgServer {
         }
 
         // for client
-        for (int i = 0; i < EstimateNCommon.clientInputsLength; i++) {
+        for (int i = 0; i < EstimateNCommon.bitVecLen; i++) {
             glb0 = new BigInteger(Wire.labelBitLength, rnd);
             glb1 = glb0.xor(Wire.R.shiftLeft(1).setBit(0));
             cBitslps[i][0] = glb0;
@@ -83,8 +87,7 @@ public class EstimateNServer extends ProgServer {
 
     protected void execCircuit() throws Exception {
         BigInteger[] sBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
-        //BigInteger[] cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
-        BigInteger[] cBitslbs = new BigInteger[EstimateNCommon.clientInputsLength];
+        BigInteger[] cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
 
         for (int i = 0; i < sBitslps.length; i++)
             sBitslbs[i] = sBitslps[i][0];
@@ -96,36 +99,56 @@ public class EstimateNServer extends ProgServer {
     }
 
     protected void interpretResult() throws Exception {
-        BigInteger[] outLabels = (BigInteger[]) EstimateNCommon.ois.readObject();
+        results = new BigInteger[numberOutputs];
 
+        BigInteger[] outLabels = (BigInteger[]) EstimateNCommon.ois.readObject();
+        int lengthPerOutput = outLabels.length / numberOutputs;
         BigInteger output = BigInteger.ZERO;
-        for (int i = 0; i < outLabels.length; i++) {
-            if (outputState.wires[i].value != Wire.UNKNOWN_SIG) {
-                if (outputState.wires[i].value == 1)
+        int wireIndex = -1;
+
+        for (int outputIndex = 0; outputIndex < numberOutputs; outputIndex++) {
+
+            for (int i = 0; i < lengthPerOutput; i++) {
+                wireIndex = outputIndex * lengthPerOutput + i;
+
+                if (outputState.wires[wireIndex].value != Wire.UNKNOWN_SIG) {
+                    if (outputState.wires[wireIndex].value == 1)
+                        output = output.setBit(i);
+                    continue;
+                } else if (outLabels[wireIndex].equals(outputState.wires[wireIndex].invd ?
+                        outputState.wires[wireIndex].lbl :
+                        outputState.wires[wireIndex].lbl.xor(Wire.R.shiftLeft(1).setBit(0)))) {
                     output = output.setBit(i);
-                continue;
-            } else if (outLabels[i].equals(outputState.wires[i].invd ?
-                    outputState.wires[i].lbl :
-                    outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)))) {
-                output = output.setBit(i);
-            } else if (!outLabels[i].equals(outputState.wires[i].invd ?
-                    outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) :
-                    outputState.wires[i].lbl))
-                throw new Exception("Bad label encountered: i = " + i + "\t" +
-                        outLabels[i] + " != (" +
-                        outputState.wires[i].lbl + ", " +
-                        outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) + ")");
+                } else if (!outLabels[wireIndex].equals(outputState.wires[wireIndex].invd ?
+                        outputState.wires[wireIndex].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) :
+                        outputState.wires[wireIndex].lbl))
+                    throw new Exception("Bad label encountered: i = " + i + "\t" +
+                            outLabels[wireIndex] + " != (" +
+                            outputState.wires[wireIndex].lbl + ", " +
+                            outputState.wires[wireIndex].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) + ")");
+
+                if (lengthPerOutput -1 == i) {
+                    results[outputIndex] = output;
+                    output = BigInteger.ZERO;
+                }
+            }
+
         }
 
-        System.out.println("# OUTPUT (pp):     " + output);
+        // output negtives
+        results[0] = results[0].testBit(EstimateNConfig.nBits - 1) ? results[0].subtract (
+                BigInteger.valueOf(2).pow(EstimateNConfig.nBits) ) : results[0];
+
+        for (int i = 0; i < numberOutputs; i++) {
+            System.out.println("# OUTPUTS (pp):     " + results[i]);
+        }
         StopWatch.taskTimeStamp("output labels received and interpreted");
     }
 
     protected void verify_result() throws Exception {
-        BigInteger[] cBits = (BigInteger[]) EstimateNCommon.ois.readObject();
+        BigInteger cBits = (BigInteger) EstimateNCommon.ois.readObject();
 
         System.out.println("# INPUTS (DEBUG): [Server]: " + sBits +
-                         "\n                  [Client]: " + cBits[0] +
-                ";  " + cBits[1] + ";  " + cBits[2] + "\n");
+                         "\n                  [Client]: " + cBits + "\n");
     }
 }

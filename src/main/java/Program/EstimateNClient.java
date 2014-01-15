@@ -6,20 +6,24 @@ import YaoGC.State;
 import YaoGC.Wire;
 
 import java.math.BigInteger;
+import java.util.Random;
 
 public class EstimateNClient extends ProgClient {
-    private BigInteger[] cBits;
+    private BigInteger cBits;
     private BigInteger[] sBitslbs, cBitslbs;
+    public static BigInteger randa = BigInteger.valueOf(11),  randb = BigInteger.valueOf(22);
 
     private State outputState;
+    private static Random rnd = new Random();
+
 
     public EstimateNClient(int length) {
         EstimateNCommon.bitVecLen = length;
         EstimateNCommon.clientInputsLength = length * 3;
     }
 
-    public void setInputs(BigInteger[] bitValues) {
-        cBits = bitValues;
+    public void setInputs(BigInteger bitValue) {
+        cBits = bitValue;
     }
 
     protected void init() throws Exception {
@@ -41,14 +45,8 @@ public class EstimateNClient extends ProgClient {
         }
         StopWatch.taskTimeStamp("receiving labels for peer's inputs");
 
-        BigInteger m = BigInteger.ZERO;
-        for (int i = 0; i < 3; i++) {
-            m = m.shiftLeft(EstimateNConfig.nBits).xor(cBits[2 - i]);
-        }
-
-        //cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
-        //cBitslbs = new BigInteger[EstimateNCommon.clientInputsLength];
-        rcver.execProtocol(m);
+        cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
+        rcver.execProtocol(cBits);
         cBitslbs = rcver.getData();
         StopWatch.taskTimeStamp("receiving labels for self's inputs");
     }
@@ -56,7 +54,6 @@ public class EstimateNClient extends ProgClient {
     protected void execCircuit() throws Exception {
         outputState = EstimateNCommon.execCircuit(sBitslbs, cBitslbs);
     }
-
 
     protected void interpretResult() throws Exception {
         EstimateNCommon.oos.writeObject(outputState.toLabels());

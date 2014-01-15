@@ -21,7 +21,7 @@ class EstimateNCommon extends ProgCommon {
     }
 
     public static State execCircuit(BigInteger[] slbs, BigInteger[] clbs) throws Exception {
-        BigInteger[] lbs = new BigInteger[4 * bitVecLen];
+        BigInteger[] lbs = new BigInteger[2 * bitVecLen];
 
         // FYI: arraycopy(src,  srcPos, dest, destPos, length)
         System.arraycopy(slbs, 0, lbs, 0, bitVecLen);

@@ -58,10 +58,15 @@ class TestEstimateNServer {
 
         server.runOffline();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 3; i++) {
             System.out.println("#### One more inputs:");
-            server.setInputs(inputValue.add(BigInteger.valueOf(i)));
+            server.setInputs(inputValue);
             server.runOnline();
+
+            // pull the outputs
+            for (int outputIndex = 0; outputIndex < server.results.length; outputIndex++) {
+                System.out.println("Outside: " + server.results[outputIndex]);
+            }
         }
 
         server.cleanup();

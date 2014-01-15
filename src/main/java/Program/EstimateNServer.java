@@ -127,6 +127,7 @@ public class EstimateNServer extends ProgServer {
                             outputState.wires[wireIndex].lbl + ", " +
                             outputState.wires[wireIndex].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) + ")");
 
+                // reset for next output
                 if (lengthPerOutput -1 == i) {
                     results[outputIndex] = output;
                     output = BigInteger.ZERO;
@@ -135,12 +136,8 @@ public class EstimateNServer extends ProgServer {
 
         }
 
-        // output negtives
-        results[0] = results[0].testBit(EstimateNConfig.nBits - 1) ? results[0].subtract (
-                BigInteger.valueOf(2).pow(EstimateNConfig.nBits) ) : results[0];
-
         for (int i = 0; i < numberOutputs; i++) {
-            System.out.println("# OUTPUTS (pp):     " + results[i]);
+            System.out.println("# OUTPUTS (" + i + "):     " + results[i]);
         }
         StopWatch.taskTimeStamp("output labels received and interpreted");
     }

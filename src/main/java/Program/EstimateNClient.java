@@ -8,17 +8,18 @@ import YaoGC.Wire;
 import java.math.BigInteger;
 
 public class EstimateNClient extends ProgClient {
-    private BigInteger cBits;
+    private BigInteger[] cBits;
     private BigInteger[] sBitslbs, cBitslbs;
 
     private State outputState;
 
     public EstimateNClient(int length) {
         EstimateNCommon.bitVecLen = length;
+        EstimateNCommon.clientInputsLength = length * 3;
     }
 
-    public void setInputs(BigInteger bitValue) {
-        cBits = bitValue;
+    public void setInputs(BigInteger[] bitValues) {
+        cBits = bitValues;
     }
 
     protected void init() throws Exception {
@@ -40,8 +41,14 @@ public class EstimateNClient extends ProgClient {
         }
         StopWatch.taskTimeStamp("receiving labels for peer's inputs");
 
-        cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
-        rcver.execProtocol(cBits);
+        BigInteger m = BigInteger.ZERO;
+        for (int i = 0; i < 3; i++) {
+            m = m.shiftLeft(EstimateNConfig.nBits).xor(cBits[2 - i]);
+        }
+
+        //cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
+        //cBitslbs = new BigInteger[EstimateNCommon.clientInputsLength];
+        rcver.execProtocol(m);
         cBitslbs = rcver.getData();
         StopWatch.taskTimeStamp("receiving labels for self's inputs");
     }

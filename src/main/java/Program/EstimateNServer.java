@@ -19,11 +19,11 @@ public class EstimateNServer extends ProgServer {
     private static final Random rnd = new Random();
 
     /**
-     * @param bv input value to circuit (in decimal representation)
      * @param length max bit length of allowed input values
      */
     public EstimateNServer(int length, int maxN) {
         EstimateNCommon.bitVecLen = length;
+        EstimateNCommon.clientInputsLength = 3 * length;
     }
 
     // initialize circuit (it needs to be explicitly called)
@@ -45,7 +45,7 @@ public class EstimateNServer extends ProgServer {
 
     private void generateLabelPairs() {
         sBitslps = new BigInteger[EstimateNCommon.bitVecLen][2];
-        cBitslps = new BigInteger[EstimateNCommon.bitVecLen][2];
+        cBitslps = new BigInteger[EstimateNCommon.clientInputsLength][2];
         BigInteger glb0, glb1;
 
         for (int i = 0; i < EstimateNCommon.bitVecLen; i++) {
@@ -56,7 +56,7 @@ public class EstimateNServer extends ProgServer {
         }
 
         // for client
-        for (int i = 0; i < EstimateNCommon.bitVecLen; i++) {
+        for (int i = 0; i < EstimateNCommon.clientInputsLength; i++) {
             glb0 = new BigInteger(Wire.labelBitLength, rnd);
             glb1 = glb0.xor(Wire.R.shiftLeft(1).setBit(0));
             cBitslps[i][0] = glb0;
@@ -83,7 +83,8 @@ public class EstimateNServer extends ProgServer {
 
     protected void execCircuit() throws Exception {
         BigInteger[] sBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
-        BigInteger[] cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
+        //BigInteger[] cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
+        BigInteger[] cBitslbs = new BigInteger[EstimateNCommon.clientInputsLength];
 
         for (int i = 0; i < sBitslps.length; i++)
             sBitslbs[i] = sBitslps[i][0];
@@ -121,9 +122,10 @@ public class EstimateNServer extends ProgServer {
     }
 
     protected void verify_result() throws Exception {
-        BigInteger cBits = (BigInteger) EstimateNCommon.ois.readObject();
+        BigInteger[] cBits = (BigInteger[]) EstimateNCommon.ois.readObject();
 
         System.out.println("# INPUTS (DEBUG): [Server]: " + sBits +
-                         "\n                  [Client]: " + cBits + "\n");
+                         "\n                  [Client]: " + cBits[0] +
+                ";  " + cBits[1] + ";  " + cBits[2] + "\n");
     }
 }

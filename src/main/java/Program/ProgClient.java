@@ -31,10 +31,6 @@ public abstract class ProgClient extends Program {
         init();
     }
 
-    public void runOnline() throws Exception {
-        super.runOnline();
-    }
-
     protected void init() throws Exception {
         System.out.println(Program.iterCount);
         ProgCommon.oos.writeInt(Program.iterCount);

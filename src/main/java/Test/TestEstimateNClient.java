@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 class TestEstimateNClient {
-    static BigInteger inputValue;
+    static BigInteger[] inputValues;
     static int nBits;
 
     static Random rnd = new Random();
@@ -41,7 +41,12 @@ class TestEstimateNClient {
 
     private static void generateData() throws Exception {
         //inputValue = new BigInteger(4, rnd).add(BigInteger.ONE);
-        inputValue = new BigInteger("5");
+        //inputValue = new BigInteger("5");
+        inputValues = new BigInteger[3];
+        for (int i = 0; i < 3; i++) {
+            //inputValue[i] = BigInteger.valueOf(rnd.nextInt(0xffff));
+            inputValues[i] = BigInteger.valueOf(i + 10);
+        }
     }
 
     public static void main(String[] args) throws Exception {
@@ -54,9 +59,9 @@ class TestEstimateNClient {
 
         client.runOffline();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             System.out.println("#### One more inputs:");
-            client.setInputs(inputValue.add(BigInteger.valueOf(i)));
+            client.setInputs(inputValues);
             client.runOnline();
         }
     }

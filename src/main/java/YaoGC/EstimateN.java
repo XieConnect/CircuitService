@@ -11,7 +11,8 @@ public class EstimateN extends CompositeCircuit {
 
     public EstimateN(int l, int k) {
         // Two input shares, one output, and one sub-circuit in total
-        super(2 * l, l, 2, "EstimateN_" + (2 * l) + "_" + k);
+        //super(2 * l, l, 2, "EstimateN_" + (2 * l) + "_" + k);
+        super(4 * l, l, 2, "EstimateN_" + (2 * l) + "_" + k);
 
         bitLength = l;
     }
@@ -42,7 +43,10 @@ public class EstimateN extends CompositeCircuit {
         //System.arraycopy(subCircuits[1].outputWires, 0, outputWires, 0, bitLength);
         //System.arraycopy(subCircuits[0].outputWires, bitLength, outputWires, bitLength, bitLength);
 
-        System.arraycopy(inputWires, bitLength, outputWires, 0, bitLength);
+        System.out.println("Inputs length: " + inputWires.length);
+        System.out.println("bitLength: " + bitLength);
+
+        System.arraycopy(inputWires, bitLength * 3, outputWires, 0, bitLength);
     }
 
     private int leftIn(int i) {

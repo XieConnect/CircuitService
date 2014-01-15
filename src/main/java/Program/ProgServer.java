@@ -38,10 +38,6 @@ public abstract class ProgServer extends Program {
         init();
     }
 
-    public void runOnline() throws Exception {
-        super.runOnline();
-    }
-
     protected void init() throws Exception {
         Program.iterCount = ProgCommon.ois.readInt();
         System.out.println("Iterations: " + Program.iterCount);

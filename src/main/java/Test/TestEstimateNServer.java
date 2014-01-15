@@ -58,7 +58,7 @@ class TestEstimateNServer {
 
         server.runOffline();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             System.out.println("#### One more inputs:");
             server.setInputs(inputValue.add(BigInteger.valueOf(i)));
             server.runOnline();

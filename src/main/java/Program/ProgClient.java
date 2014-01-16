@@ -7,7 +7,9 @@ import OT.Receiver;
 import Utils.StopWatch;
 import YaoGC.Circuit;
 
+import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public abstract class ProgClient extends Program {
 
@@ -40,7 +42,21 @@ public abstract class ProgClient extends Program {
     }
 
     private void create_socket_and_connect() throws Exception {
-        sock = new java.net.Socket(serverIPname, serverPort);          // create socket and connect
+        // Wait for opponent's socket server to start
+        boolean connected = false;
+        while (!connected) {
+            try {
+                sock = new Socket(serverIPname, serverPort);
+                connected = true;
+            } catch (UnknownHostException e) {
+                System.err.println("Client: unknow socket host " + serverIPname);
+                System.exit(-1);
+            } catch (IOException e) {
+                System.out.print("\rWaiting for server to start...");
+                Thread.sleep(100);  //customize to get wait time shorter
+            }
+        }
+
         ProgCommon.oos = new java.io.ObjectOutputStream(sock.getOutputStream());
         ProgCommon.ois = new java.io.ObjectInputStream(sock.getInputStream());
     }

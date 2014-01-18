@@ -11,7 +11,7 @@ import java.util.Random;
 public class EstimateNClient extends ProgClient {
     private BigInteger cBits;
     private BigInteger[] sBitslbs, cBitslbs;
-    public static BigInteger randa = BigInteger.valueOf(11),  randb = BigInteger.valueOf(22);
+    public static BigInteger randa = BigInteger.valueOf(2),  randb = BigInteger.valueOf(1);
 
     private State outputState;
     private static Random rnd = new Random();

@@ -34,7 +34,7 @@ class TestEstimateNServer {
             System.exit(2);
         }
 
-        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(64))).intValue();
+        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(128))).intValue();
     }
 
     /**
@@ -43,7 +43,7 @@ class TestEstimateNServer {
     private static void generateData() throws Exception {
         //inputValue = new BigInteger(nBits - 2, rnd).add(BigInteger.ONE);
         //inputValue = new BigInteger("38834241553");
-        inputValue = new BigInteger("1");
+        inputValue = new BigInteger("7");
     }
 
     public static void main(String[] args) throws Exception {
@@ -58,7 +58,8 @@ class TestEstimateNServer {
 
         server.runOffline();
 
-        for (int i = 0; i < 3; i++) {
+        // run online phase three times
+        for (int i = 0; i < 1; i++) {
             System.out.println("#### One more inputs:");
             server.setInputs(inputValue);
             server.runOnline();

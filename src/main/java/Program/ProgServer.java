@@ -17,7 +17,6 @@ import java.net.Socket;
 
 public abstract class ProgServer extends Program {
 
-    final private int serverPort = 23456;             // server port number
     private ServerSocket sock = null;              // original server socket
     private Socket clientSocket = null;              // socket created by accept
 
@@ -49,7 +48,7 @@ public abstract class ProgServer extends Program {
      * Establish socket connection with client
      */
     private void create_socket_and_listen() throws Exception {
-        sock = new ServerSocket(serverPort);            // create socket and bind to port
+        sock = new ServerSocket(EstimateNConfig.socketPort);            // create socket and bind to port
         System.out.println("waiting for client to connect");
         clientSocket = sock.accept();                   // wait for client to connect
         System.out.println("client has connected");

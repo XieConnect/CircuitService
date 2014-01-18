@@ -17,7 +17,7 @@ class EstimateNCommon extends ProgCommon {
 
         //DEBUG
         //ccs[0] = new ScaleEpsilon(bitVecLen);
-        ccs[0] = new EstimateN(bitVecLen, bitVecLen);
+        ccs[0] = new EstimateNSubstep(bitVecLen, bitVecLen);
     }
 
     public static State execCircuit(BigInteger[] slbs, BigInteger[] clbs) throws Exception {

@@ -11,6 +11,8 @@ import java.util.Random;
 public class EstimateNServer extends ProgServer {
     // input value (in decimal; "server bits")
     private BigInteger sBits;
+    // for converting to negative values
+    private static BigInteger fieldSpace = BigInteger.valueOf(2).pow(EstimateNConfig.nBits);
 
     private State outputState;
 
@@ -112,22 +114,30 @@ public class EstimateNServer extends ProgServer {
                 wireIndex = outputIndex * lengthPerOutput + i;
 
                 if (outputState.wires[wireIndex].value != Wire.UNKNOWN_SIG) {
-                    if (outputState.wires[wireIndex].value == 1)
+                    if (outputState.wires[wireIndex].value == 1) {
                         output = output.setBit(i);
-                    continue;
+                    }
+
+                    // never skip result processing if reached end of current iteration
+                    if (lengthPerOutput -1 != i) {
+                        continue;
+                    }
                 } else if (outLabels[wireIndex].equals(outputState.wires[wireIndex].invd ?
                         outputState.wires[wireIndex].lbl :
                         outputState.wires[wireIndex].lbl.xor(Wire.R.shiftLeft(1).setBit(0)))) {
+
                     output = output.setBit(i);
                 } else if (!outLabels[wireIndex].equals(outputState.wires[wireIndex].invd ?
                         outputState.wires[wireIndex].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) :
-                        outputState.wires[wireIndex].lbl))
+                        outputState.wires[wireIndex].lbl)) {
+
                     throw new Exception("Bad label encountered: i = " + i + "\t" +
                             outLabels[wireIndex] + " != (" +
                             outputState.wires[wireIndex].lbl + ", " +
                             outputState.wires[wireIndex].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) + ")");
+                }
 
-                // reset for next output
+                // Result processing: store current value; reset for next output
                 if (lengthPerOutput -1 == i) {
                     results[outputIndex] = output;
                     output = BigInteger.ZERO;
@@ -136,9 +146,6 @@ public class EstimateNServer extends ProgServer {
 
         }
 
-        for (int i = 0; i < numberOutputs; i++) {
-            System.out.println("# OUTPUTS (" + i + "):     " + results[i]);
-        }
         StopWatch.taskTimeStamp("output labels received and interpreted");
     }
 

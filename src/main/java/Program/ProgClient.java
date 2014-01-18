@@ -14,7 +14,6 @@ import java.net.UnknownHostException;
 public abstract class ProgClient extends Program {
 
     public static String serverIPname = "localhost";             // server IP name
-    private final int serverPort = 23456;                   // server port number
     private Socket sock = null;                    // Socket object for communicating
 
     protected int otNumOfPairs;
@@ -46,14 +45,14 @@ public abstract class ProgClient extends Program {
         boolean connected = false;
         while (!connected) {
             try {
-                sock = new Socket(serverIPname, serverPort);
+                sock = new Socket(serverIPname, EstimateNConfig.socketPort);
                 connected = true;
             } catch (UnknownHostException e) {
                 System.err.println("Client: unknow socket host " + serverIPname);
                 System.exit(-1);
             } catch (IOException e) {
                 System.out.print("\rWaiting for server to start...");
-                Thread.sleep(100);  //customize to get wait time shorter
+                Thread.sleep(50);  //customize to get wait time shorter
             }
         }
 

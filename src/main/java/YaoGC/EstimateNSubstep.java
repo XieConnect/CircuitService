@@ -12,7 +12,8 @@ public class EstimateNSubstep extends CompositeCircuit {
     private int bitLength;
     private static int subcircuitTypes = 4;
     // max N as in 2^n
-    private static int maxN = EstimateNConfig.maxN;
+    private static int maxN = EstimateNConfig.MaxNLoops;
+
     // index of ADD sub-circuit for obtaining X
     private int X_INDEX = 0;
     // index of last subtraction sub-circuit

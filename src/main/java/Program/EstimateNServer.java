@@ -12,7 +12,7 @@ public class EstimateNServer extends ProgServer {
     // input value (in decimal; "server bits")
     private BigInteger sBits;
     // for converting to negative values
-    private static BigInteger fieldSpace = BigInteger.valueOf(2).pow(EstimateNConfig.nBits);
+    private static BigInteger fieldSpace = BigInteger.valueOf(2).pow(EstimateNConfig.MaxInputBits);
 
     private State outputState;
 
@@ -25,11 +25,11 @@ public class EstimateNServer extends ProgServer {
     public BigInteger[] results;
 
     /**
-     * @param length max bit length of allowed input values
+     * @param maxInputBits max bit length of allowed input values
      */
-    public EstimateNServer(int length, int maxN) {
-        EstimateNCommon.bitVecLen = length;
-        EstimateNCommon.clientInputsLength = 3 * length;
+    public EstimateNServer(int maxInputBits, int maxNLoops) {
+        EstimateNConfig.MaxInputBits = maxInputBits;
+        EstimateNConfig.MaxNLoops = maxNLoops;
     }
 
     // initialize circuit (it needs to be explicitly called)

@@ -15,7 +15,7 @@ public class ScaleEpsilon extends CompositeCircuit {
     private static int subcircuitTypes = 2;
 
     public ScaleEpsilon(int l) {
-        super(2 * l, l, 1 + subcircuitTypes * EstimateNConfig.maxN, "ScaleEpsilon_" + (2 * l) + "_" + l);
+        super(2 * l, l, 1 + subcircuitTypes * EstimateNConfig.MaxNLoops, "ScaleEpsilon_" + (2 * l) + "_" + l);
 
         bitLength = l;
     }
@@ -25,14 +25,14 @@ public class ScaleEpsilon extends CompositeCircuit {
     }
 
     private int MUX_INDEX(int i) {
-        return 1 + EstimateNConfig.maxN + i;
+        return 1 + EstimateNConfig.MaxNLoops + i;
     }
 
     // Construct the actual circuit: one SUB, followed by multiple GTs, and then multiple MUXes
     protected void createSubCircuits() throws Exception {
         subCircuits[0] = new SUB_2L_L(bitLength);
 
-        for (int i = 0; i < EstimateNConfig.maxN; i++) {
+        for (int i = 0; i < EstimateNConfig.MaxNLoops; i++) {
             subCircuits[GT_INDEX(i)] = new GT_2L_1(bitLength);
             subCircuits[MUX_INDEX(i)] = new MUX_2Lplus1_L(bitLength);
         }
@@ -65,7 +65,7 @@ public class ScaleEpsilon extends CompositeCircuit {
                 subCircuits[MUX_INDEX(0)].inputWires, 2 * bitLength);
 
         //-- the rest iterations of for-loop
-        for (int circuitIndex = 1; circuitIndex < EstimateNConfig.maxN; circuitIndex++) {
+        for (int circuitIndex = 1; circuitIndex < EstimateNConfig.MaxNLoops; circuitIndex++) {
             for (int i = 0; i < bitLength; i++) {
                 // jEnd
                 subCircuits[0].outputWires[i].connectTo(
@@ -88,7 +88,7 @@ public class ScaleEpsilon extends CompositeCircuit {
     }
 
     protected void defineOutputWires() {
-        System.arraycopy(subCircuits[MUX_INDEX(EstimateNConfig.maxN - 1)].outputWires, 0,
+        System.arraycopy(subCircuits[MUX_INDEX(EstimateNConfig.MaxNLoops - 1)].outputWires, 0,
                 outputWires, 0, bitLength);
     }
 
@@ -101,18 +101,18 @@ public class ScaleEpsilon extends CompositeCircuit {
     }
 
     protected void fixInternalWires() {
-        BigInteger maxNBig = BigInteger.valueOf(EstimateNConfig.maxN);
+        BigInteger maxNBig = BigInteger.valueOf(EstimateNConfig.MaxNLoops);
 
         for (int i = 0; i < bitLength; i++) {
             subCircuits[0].inputWires[rightIn(i)].fixWire( (maxNBig.testBit(i) ? 1 : 0) );
         }
 
-        for (int circuitIndex = 0; circuitIndex < EstimateNConfig.maxN; circuitIndex++) {
+        for (int circuitIndex = 0; circuitIndex < EstimateNConfig.MaxNLoops; circuitIndex++) {
             subCircuits[MUX_INDEX(circuitIndex)].inputWires[MUX_2Lplus1_L.X(0)].fixWire(0);
 
             for (int i = 0; i < bitLength; i++) {
                 subCircuits[GT_INDEX(circuitIndex)].inputWires[GT_2L_1.X(i)].fixWire(
-                        (BigInteger.valueOf(circuitIndex).testBit(i) ? 1 : 0) );
+                        (BigInteger.valueOf(circuitIndex + 1).testBit(i) ? 1 : 0) );
             }
         }
     }

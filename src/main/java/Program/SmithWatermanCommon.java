@@ -56,7 +56,7 @@ public class SmithWatermanCommon extends ProgCommon {
             }
 
         nBits = bitLength(Math.max(Math.abs(max), Math.abs(min))) + 1;
-        System.out.println("nBits: " + nBits);
+        System.out.println("MaxInputBits: " + nBits);
 
         maxscore = max;
         scn.close();

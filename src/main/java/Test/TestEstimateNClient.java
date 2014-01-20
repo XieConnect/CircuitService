@@ -50,7 +50,7 @@ class TestEstimateNClient {
 
         generateData();
 
-        EstimateNClient client = new EstimateNClient(EstimateNConfig.nBits);
+        EstimateNClient client = new EstimateNClient(EstimateNConfig.MaxInputBits);
 
         client.runOffline();
 

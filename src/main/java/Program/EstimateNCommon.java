@@ -6,17 +6,15 @@ import YaoGC.*;
 import java.math.BigInteger;
 
 class EstimateNCommon extends ProgCommon {
-    // max bit length of allowed input values
-    static int bitVecLen;
-    static int clientInputsLength;
+    // max bit length of allowed input values (value representation)
+    static int bitVecLen = EstimateNConfig.MaxInputBits;
+    // how many iterations in for-loop (e.g., max value for the estimated n)
+    static int MaxNLoops;
 
     // Initialize the Hamming circuit
     protected static void initCircuits() {
         ccs = new Circuit[1];
         ccs[0] = new EstimateN(bitVecLen, bitVecLen);
-
-        //DEBUG
-        //ccs[0] = new ScaleEpsilon(bitVecLen);
     }
 
     public static State execCircuit(BigInteger[] slbs, BigInteger[] clbs) throws Exception {

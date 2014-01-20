@@ -41,7 +41,7 @@ class TestEstimateNServer {
      * Generate input value
      */
     private static void generateData() throws Exception {
-        //inputValue = new BigInteger(nBits - 2, rnd).add(BigInteger.ONE);
+        //inputValue = new BigInteger(MaxInputBits - 2, rnd).add(BigInteger.ONE);
         //inputValue = new BigInteger("38834241553");
         inputValue = new BigInteger("725");
     }
@@ -54,7 +54,7 @@ class TestEstimateNServer {
         generateData();
 
         // args: max bit size of value,  number of loops
-        EstimateNServer server = new EstimateNServer(EstimateNConfig.nBits, EstimateNConfig.maxN);
+        EstimateNServer server = new EstimateNServer(EstimateNConfig.MaxInputBits, EstimateNConfig.MaxNLoops);
 
         server.runOffline();
 

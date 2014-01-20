@@ -11,15 +11,12 @@ import java.util.Random;
 public class EstimateNClient extends ProgClient {
     private BigInteger cBits;
     private BigInteger[] sBitslbs, cBitslbs;
-    public static BigInteger randa = BigInteger.valueOf(2),  randb = BigInteger.valueOf(1);
+    public static BigInteger randa = BigInteger.valueOf(0),  randb = BigInteger.valueOf(0);
 
     private State outputState;
-    private static Random rnd = new Random();
-
 
     public EstimateNClient(int length) {
-        EstimateNCommon.bitVecLen = length;
-        EstimateNCommon.clientInputsLength = length * 3;
+        EstimateNConfig.MaxInputBits = length;
     }
 
     public void setInputs(BigInteger bitValue) {
@@ -43,12 +40,12 @@ public class EstimateNClient extends ProgClient {
             int bytelength = (Wire.labelBitLength - 1) / 8 + 1;
             sBitslbs[i] = Utils.readBigInteger(bytelength, EstimateNCommon.ois);
         }
-        StopWatch.taskTimeStamp("receiving labels for peer's inputs");
+        StopWatch.taskTimeStamp("OT inputs (peer's)");
 
         cBitslbs = new BigInteger[EstimateNCommon.bitVecLen];
         rcver.execProtocol(cBits);
         cBitslbs = rcver.getData();
-        StopWatch.taskTimeStamp("receiving labels for self's inputs");
+        StopWatch.taskTimeStamp("OT inputs (self's)");
     }
 
     protected void execCircuit() throws Exception {

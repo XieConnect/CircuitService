@@ -13,6 +13,7 @@ public class EstimateNSubstep extends CompositeCircuit {
     private static int subcircuitTypes = 4;
     // max N as in 2^n
     private static int maxN = EstimateNConfig.MaxNLoops;
+    private static int MaxAdd1Bits = (int) Math.round(Math.ceil(Math.log(maxN) / Math.log(2)));
 
     // index of ADD sub-circuit for obtaining X
     private int X_INDEX = 0;
@@ -34,7 +35,7 @@ public class EstimateNSubstep extends CompositeCircuit {
         return subcircuitTypes * i + 2;
     }
 
-    // for (n+1) sub-circuit
+    // for computing (n+1) sub-circuit
     private int ADD1_N_INDEX(int i) {
         return subcircuitTypes * i + 3;
     }
@@ -55,6 +56,7 @@ public class EstimateNSubstep extends CompositeCircuit {
             subCircuits[MUX_INDEX(i)] = new MUX_2Lplus1_L(bitLength);
 
             // for estimating n
+            //subCircuits[ADD1_N_INDEX(i)] = new ADD1_Lplus1_L(bitLength);
             subCircuits[ADD1_N_INDEX(i)] = new ADD1_Lplus1_L(bitLength);
             subCircuits[MUX_N_INDEX(i)] = new MUX_2Lplus1_L(bitLength);
         }
@@ -81,8 +83,9 @@ public class EstimateNSubstep extends CompositeCircuit {
             //NOTE: est will be provided by fixed wires instead
             subCircuits[X_INDEX].outputWires[i].connectTo( subCircuits[GT_INDEX(0)].inputWires, GT_2L_1.X(i) );
 
-            subCircuits[ADD1_N_INDEX(0)].outputWires[i].connectTo(
-                    subCircuits[MUX_N_INDEX(0)].inputWires, MUX_2Lplus1_L.Y(i) );
+                subCircuits[ADD1_N_INDEX(0)].outputWires[i].connectTo(
+                        subCircuits[MUX_N_INDEX(0)].inputWires, MUX_2Lplus1_L.Y(i) );
+
         }
 
         // use the Greater-Than result as decision signal for MUX
@@ -112,7 +115,7 @@ public class EstimateNSubstep extends CompositeCircuit {
                         subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.X(i));
 
 
-                //-- Estimating n
+                //-- Estimate n (as in 2^n =~= x)
                 // input n starts from the 2nd bit for ADD1
                 subCircuits[MUX_N_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
                     subCircuits[ADD1_N_INDEX(circuitIndex)].inputWires, i+1);
@@ -194,5 +197,6 @@ public class EstimateNSubstep extends CompositeCircuit {
             subCircuits[ADD1_N_INDEX(0)].inputWires[i].fixWire(0);
             subCircuits[MUX_N_INDEX(0)].inputWires[MUX_2Lplus1_L.X(i - 1)].fixWire(0);
         }
+
     }
 }

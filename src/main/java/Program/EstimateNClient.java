@@ -17,6 +17,7 @@ public class EstimateNClient extends ProgClient {
 
     public EstimateNClient(int length) {
         EstimateNConfig.MaxInputBits = length;
+        EstimateNCommon.bitVecLen = length;
     }
 
     public void setInputs(BigInteger bitValue) {

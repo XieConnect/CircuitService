@@ -7,9 +7,7 @@ import java.math.BigInteger;
 
 class EstimateNCommon extends ProgCommon {
     // max bit length of allowed input values (value representation)
-    static int bitVecLen = EstimateNConfig.MaxInputBits;
-    // how many iterations in for-loop (e.g., max value for the estimated n)
-    static int MaxNLoops;
+    static int bitVecLen;
 
     // Initialize the Hamming circuit
     protected static void initCircuits() {

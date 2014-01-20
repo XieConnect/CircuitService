@@ -30,6 +30,7 @@ public class EstimateNServer extends ProgServer {
     public EstimateNServer(int maxInputBits, int maxNLoops) {
         EstimateNConfig.MaxInputBits = maxInputBits;
         EstimateNConfig.MaxNLoops = maxNLoops;
+        EstimateNCommon.bitVecLen = maxInputBits;
     }
 
     // initialize circuit (it needs to be explicitly called)

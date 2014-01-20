@@ -12,9 +12,6 @@ import java.util.Random;
 
 class TestEstimateNClient {
     static BigInteger inputValue;
-    static int nBits;
-
-    static Random rnd = new Random();
 
     private static void printUsage() {
         System.out.println("Usage: java TestHammingClient [{-n, --bit-length} length] [{-s, --server} servername] [{-r, --iteration} r]");
@@ -34,7 +31,6 @@ class TestEstimateNClient {
             System.exit(2);
         }
 
-        nBits = ((Integer) parser.getOptionValue(optionBitLength, new Integer(64))).intValue();
         ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));
         Program.iterCount = ((Integer) parser.getOptionValue(optionIterCount, new Integer(1))).intValue();
     }

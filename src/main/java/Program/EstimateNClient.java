@@ -54,8 +54,12 @@ public class EstimateNClient extends ProgClient {
     }
 
     protected void interpretResult() throws Exception {
+        System.out.println("# client to result to server...");
+
         EstimateNCommon.oos.writeObject(outputState.toLabels());
         EstimateNCommon.oos.flush();
+
+        System.out.println("  client finished sending.");
     }
 
     protected void verify_result() throws Exception {

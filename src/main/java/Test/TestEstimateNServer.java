@@ -54,7 +54,7 @@ class TestEstimateNServer {
         generateData();
 
         // args: max bit size of value,  number of loops
-        EstimateNServer server = new EstimateNServer(80, 80);
+        EstimateNServer server = new EstimateNServer(80, 70);
 
         server.runOffline();
 

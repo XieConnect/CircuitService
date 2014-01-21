@@ -11,8 +11,6 @@ import java.util.Random;
 public class EstimateNServer extends ProgServer {
     // input value (in decimal; "server bits")
     private BigInteger sBits;
-    // for converting to negative values
-    private static BigInteger fieldSpace = BigInteger.valueOf(2).pow(EstimateNConfig.MaxInputBits);
 
     private State outputState;
 

@@ -43,7 +43,7 @@ class TestEstimateNServer {
     private static void generateData() throws Exception {
         //inputValue = new BigInteger(MaxInputBits - 2, rnd).add(BigInteger.ONE);
         //inputValue = new BigInteger("38834241553");
-        inputValue = new BigInteger("725");
+        inputValue = new BigInteger("631");
     }
 
     public static void main(String[] args) throws Exception {
@@ -54,7 +54,7 @@ class TestEstimateNServer {
         generateData();
 
         // args: max bit size of value,  number of loops
-        EstimateNServer server = new EstimateNServer(EstimateNConfig.MaxInputBits, EstimateNConfig.MaxNLoops);
+        EstimateNServer server = new EstimateNServer(80, 80);
 
         server.runOffline();
 

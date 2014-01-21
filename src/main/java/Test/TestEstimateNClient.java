@@ -46,7 +46,7 @@ class TestEstimateNClient {
 
         generateData();
 
-        EstimateNClient client = new EstimateNClient(EstimateNConfig.MaxInputBits);
+        EstimateNClient client = new EstimateNClient(80);
 
         client.runOffline();
 
@@ -54,6 +54,8 @@ class TestEstimateNClient {
             System.out.println("#### One more inputs:");
             client.setInputs(inputValue);
             client.runOnline();
+            System.out.println("# Finished current. RandA = " + client.randa +
+                    ";  RandB = " + client.randb + "\n");
         }
     }
 }

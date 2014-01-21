@@ -105,6 +105,10 @@ public class EstimateNSubstep extends CompositeCircuit {
                 // Greater-Than: x > est ? 1 : 0
                 subCircuits[X_INDEX].outputWires[i].connectTo(
                         subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.X(i));
+            }
+
+            // reduce bit length
+            for (int i = 0; i < circuitIndex + 1; i++) {
                 subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
                         subCircuits[GT_INDEX(circuitIndex)].inputWires, GT_2L_1.Y(i));
 
@@ -176,18 +180,18 @@ public class EstimateNSubstep extends CompositeCircuit {
         subCircuits[MUX_INDEX(0)].inputWires[MUX_2Lplus1_L.Y(1)].fixWire(initialEst);
         subCircuits[MUX_INDEX(0)].inputWires[MUX_2Lplus1_L.Y(0)].fixWire(0);
 
-        for (int i = 1; i < bitLength; i++) {
-           subCircuits[GT_INDEX(0)].inputWires[GT_2L_1.Y(i)].fixWire(0);
-           subCircuits[MUX_INDEX(0)].inputWires[MUX_2Lplus1_L.X(i)].fixWire(0);
-           // assign 2*est through LEFT bit-shifting
-            if (i < bitLength - 1) {
-                subCircuits[MUX_INDEX(0)].inputWires[MUX_2Lplus1_L.Y(i + 1)].fixWire(0);
-            }
-        }
-
         for (int circuitIndex = 0; circuitIndex < maxN; circuitIndex++) {
             // For est: when shifting left to get 2*est, right-most bit will be complemented by 0
             subCircuits[MUX_INDEX(circuitIndex)].inputWires[MUX_2Lplus1_L.Y(0)].fixWire(0);
+
+            for (int i = circuitIndex + 1; i < bitLength; i++) {
+                subCircuits[GT_INDEX(circuitIndex)].inputWires[GT_2L_1.Y(i)].fixWire(0);
+                subCircuits[MUX_INDEX(circuitIndex)].inputWires[MUX_2Lplus1_L.X(i)].fixWire(0);
+
+                if (i < bitLength - 1) {
+                    subCircuits[MUX_INDEX(circuitIndex)].inputWires[MUX_2Lplus1_L.Y(i + 1)].fixWire(0);
+                }
+            }
 
             //-- for estimating n
             // set first inputs of all ADD1 to 1

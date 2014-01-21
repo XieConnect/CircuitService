@@ -1,7 +1,8 @@
 /**
  * @author Wei Xie
  * @description Sub-circuit inside the loop of estimating n in 2^n (to approximate value x)
- * Output (in order): (est, n)
+ * Inputs: (x1, x2)   (note: randA, randB are generated inside the circuit)
+ * Outputs: (est, n)
  */
 
 package YaoGC;
@@ -52,11 +53,10 @@ public class EstimateNSubstep extends CompositeCircuit {
         for (int i = 0; i < maxN; i++) {
             subCircuits[GT_INDEX(i)] = new GT_2L_1(bitLength);
 
-            // for estimating est
+            //-- for estimating est
             subCircuits[MUX_INDEX(i)] = new MUX_2Lplus1_L(bitLength);
 
-            // for estimating n
-            //subCircuits[ADD1_N_INDEX(i)] = new ADD1_Lplus1_L(bitLength);
+            //-- for estimating n
             subCircuits[ADD1_N_INDEX(i)] = new ADD1_Lplus1_L(bitLength);
             subCircuits[MUX_N_INDEX(i)] = new MUX_2Lplus1_L(bitLength);
         }
@@ -73,7 +73,7 @@ public class EstimateNSubstep extends CompositeCircuit {
     protected void connectWires() throws Exception {
         // X result:  subCircuits[X_INDEX].outputWires;  (from bits 0 to bitLength - 1)
 
-        //-- connect first set of subcircuits --
+        //-- connect first set of subcircuits
         for (int i = 0; i < bitLength; i++) {
             // ADD to get x
             inputWires[leftIn(i)].connectTo(subCircuits[X_INDEX].inputWires, leftIn(i));
@@ -82,21 +82,25 @@ public class EstimateNSubstep extends CompositeCircuit {
             // Greater-Than: x > est ? 1 : 0
             //NOTE: est will be provided by fixed wires instead
             subCircuits[X_INDEX].outputWires[i].connectTo( subCircuits[GT_INDEX(0)].inputWires, GT_2L_1.X(i) );
-
-                subCircuits[ADD1_N_INDEX(0)].outputWires[i].connectTo(
-                        subCircuits[MUX_N_INDEX(0)].inputWires, MUX_2Lplus1_L.Y(i) );
-
         }
 
         // use the Greater-Than result as decision signal for MUX
         subCircuits[GT_INDEX(0)].outputWires[0].connectTo(
                 subCircuits[MUX_INDEX(0)].inputWires, inDegree);
+
+        //-- for estimating n
+        for (int i = 0; i < MaxAdd1Bits; i++) {
+            subCircuits[ADD1_N_INDEX(0)].outputWires[i].connectTo(
+                    subCircuits[MUX_N_INDEX(0)].inputWires, MUX_2Lplus1_L.Y(i) );
+        }
+
         subCircuits[GT_INDEX(0)].outputWires[0].connectTo(
                 subCircuits[MUX_N_INDEX(0)].inputWires, inDegree);
 
 
-        //-- handle other sets of circuits --
+        //-- handle other sets of circuits
         for (int circuitIndex = 1; circuitIndex < maxN; circuitIndex++) {
+            //-- for estimating est
             for (int i = 0; i < bitLength; i++) {
                 // Greater-Than: x > est ? 1 : 0
                 subCircuits[X_INDEX].outputWires[i].connectTo(
@@ -113,20 +117,22 @@ public class EstimateNSubstep extends CompositeCircuit {
 
                 subCircuits[MUX_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
                         subCircuits[MUX_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.X(i));
-
-
-                //-- Estimate n (as in 2^n =~= x)
-                // input n starts from the 2nd bit for ADD1
-                subCircuits[MUX_N_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
-                    subCircuits[ADD1_N_INDEX(circuitIndex)].inputWires, i+1);
-                subCircuits[ADD1_N_INDEX(circuitIndex)].outputWires[i].connectTo(
-                    subCircuits[MUX_N_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.Y(i) );
-                subCircuits[MUX_N_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
-                        subCircuits[MUX_N_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.X(i));
             }
 
             subCircuits[GT_INDEX(circuitIndex)].outputWires[0].connectTo(
                     subCircuits[MUX_INDEX(circuitIndex)].inputWires, inDegree);
+
+
+            //-- for estimating n
+            for (int i = 0; i < MaxAdd1Bits; i++) {
+            // input n starts from the 2nd bit for ADD1
+                subCircuits[MUX_N_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
+                        subCircuits[ADD1_N_INDEX(circuitIndex)].inputWires, i+1);
+                subCircuits[ADD1_N_INDEX(circuitIndex)].outputWires[i].connectTo(
+                        subCircuits[MUX_N_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.Y(i) );
+                subCircuits[MUX_N_INDEX(circuitIndex - 1)].outputWires[i].connectTo(
+                        subCircuits[MUX_N_INDEX(circuitIndex)].inputWires, MUX_2Lplus1_L.X(i));
+            }
 
             subCircuits[GT_INDEX(circuitIndex)].outputWires[0].connectTo(
                     subCircuits[MUX_N_INDEX(circuitIndex)].inputWires, inDegree);
@@ -145,6 +151,7 @@ public class EstimateNSubstep extends CompositeCircuit {
     protected void defineOutputWires() {
         System.arraycopy(subCircuits[SUB_INDEX].outputWires, 0,
                 outputWires, 0, bitLength);
+
         System.arraycopy(subCircuits[MUX_N_INDEX(maxN - 1)].outputWires, 0,
                 outputWires, bitLength, bitLength);
     }
@@ -169,7 +176,6 @@ public class EstimateNSubstep extends CompositeCircuit {
         subCircuits[MUX_INDEX(0)].inputWires[MUX_2Lplus1_L.Y(1)].fixWire(initialEst);
         subCircuits[MUX_INDEX(0)].inputWires[MUX_2Lplus1_L.Y(0)].fixWire(0);
 
-
         for (int i = 1; i < bitLength; i++) {
            subCircuits[GT_INDEX(0)].inputWires[GT_2L_1.Y(i)].fixWire(0);
            subCircuits[MUX_INDEX(0)].inputWires[MUX_2Lplus1_L.X(i)].fixWire(0);
@@ -179,24 +185,28 @@ public class EstimateNSubstep extends CompositeCircuit {
             }
         }
 
-
         for (int circuitIndex = 0; circuitIndex < maxN; circuitIndex++) {
+            // For est: when shifting left to get 2*est, right-most bit will be complemented by 0
+            subCircuits[MUX_INDEX(circuitIndex)].inputWires[MUX_2Lplus1_L.Y(0)].fixWire(0);
+
             //-- for estimating n
             // set first inputs of all ADD1 to 1
             subCircuits[ADD1_N_INDEX(circuitIndex)].inputWires[0].fixWire(1);
 
-            // For est: when shifting left to get 2*est, right-most bit will be complemented by 0
-            subCircuits[MUX_INDEX(circuitIndex)].inputWires[MUX_2Lplus1_L.Y(0)].fixWire(0);
+            for (int i = MaxAdd1Bits; i < bitLength; i++) {
+                subCircuits[ADD1_N_INDEX(circuitIndex)].inputWires[i + 1].fixWire(0);
+                subCircuits[MUX_N_INDEX(circuitIndex)].inputWires[MUX_2Lplus1_L.Y(i)].fixWire(0);
+                subCircuits[MUX_N_INDEX(circuitIndex)].inputWires[MUX_2Lplus1_L.X(i)].fixWire(0);
+            }
         }
 
-        // Initialize n = 1
+        // Initialize n
         subCircuits[ADD1_N_INDEX(0)].inputWires[1].fixWire(initialN);
         subCircuits[MUX_N_INDEX(0)].inputWires[MUX_2Lplus1_L.X(0)].fixWire(initialN);
 
-        for (int i = 2; i < bitLength + 1; i++) {
+        for (int i = 2; i < MaxAdd1Bits + 1; i++) {
             subCircuits[ADD1_N_INDEX(0)].inputWires[i].fixWire(0);
             subCircuits[MUX_N_INDEX(0)].inputWires[MUX_2Lplus1_L.X(i - 1)].fixWire(0);
         }
-
     }
 }

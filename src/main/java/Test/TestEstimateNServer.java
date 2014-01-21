@@ -59,7 +59,7 @@ class TestEstimateNServer {
         server.runOffline();
 
         // run online phase three times
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 3; i++) {
             System.out.println("#### One more inputs:");
             server.setInputs(inputValue);
             server.runOnline();

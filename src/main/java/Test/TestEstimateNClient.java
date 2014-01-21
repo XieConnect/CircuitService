@@ -50,7 +50,7 @@ class TestEstimateNClient {
 
         client.runOffline();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 3; i++) {
             System.out.println("#### One more inputs:");
             client.setInputs(inputValue);
             client.runOnline();

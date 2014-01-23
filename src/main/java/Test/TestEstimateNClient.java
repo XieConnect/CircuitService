@@ -46,7 +46,8 @@ class TestEstimateNClient {
 
         generateData();
 
-        EstimateNClient client = new EstimateNClient(80);
+        // args: max bit length of data, max loop iterations
+        EstimateNClient client = new EstimateNClient(80, 70);
 
         client.runOffline();
 

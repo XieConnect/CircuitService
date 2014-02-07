@@ -1,6 +1,8 @@
-Faster Garbled Circuit
-==========
-This framework helps accelerate garbled circuits.
+# Garbled Circuit Backend Service
+
+This package turns garbled circuit evaluation into an always-online backend service. This way we can split the online phase from the offline one when evaluating a circuit, and can re-use the circuit preparation across a series of computations.
+
+We also provide a few optimized subcircuits for certain computations. The low-level circuit evaluation is based on Yan Huang's FastGC framework (CCS'11).
 
 
 ## Instructions
@@ -12,53 +14,34 @@ To run the hamming distance application, type:
     ant runhamming
     
 It invokes the "runhamming" bash script to run both the server and the client.
-The output goes to the file ** results/hammingserverout **.
+The output goes to the file <i> results/hammingserverout </i>.
 
-To run the Levenshtein distance application, type:
+For the Levenshtein distance application, the corresponding ant task is: <i>runlevenshtein</i> ; and for the Smith-Waterman application, it is: <i>runsw</i> ; for secure AES, it is: <i>runaes</i>. 
 
-    ant runlevenshtein
+To run the secure ln(x) application, type:
 
-Similarly, the output goes to the file results/levenshteinserverout.
+    ant runln
 
-To run the Smith-Waterman application, type
 
-    ant runsw
+## Our Enhancements
+- Split online and offline phases of circuit evaluation;
+- Run online phase as a backend service, constantly taking inputs from the net;
+- Customized circuits for a few computations;
+- Allow for returning multi-value results from circuit;
+- Added necessary documentation to source code;
+- etc.
 
-Similarly, the output goes to the file results/swserverout.
 
-To run the secure AES, type:
+## TO-DO
+- Parallel execution on subcircuit level;
+- Faster OT protocol;
 
-    ant runaes
 
-Similarly, the output goes to the file results/aesserverout.
+## Copyright & Licence
+Refer to LICENSE file and authors.
 
 
 ## Authors
-* Yan Huang, University of Virgina
+* Wei Xie <XieConnect@gmail.com>
 
-* Wei Xie, Vanderbilt University
-
-
-## Licence
-
-This software package is made freely available under the MIT license.
-
-Copyright (C) 2010 by Yan Huang
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+* Yan Huang, University of Virgina  (author of original FastGC)
